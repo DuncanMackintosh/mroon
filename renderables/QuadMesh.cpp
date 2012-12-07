@@ -8,28 +8,31 @@
 #include <stdio.h>
 #include "QuadMesh.h"
 #include <GL/glut.h>
+#include <vector>
 
 namespace mroon {
 
 QuadMesh::QuadMesh() {
-	// TODO Auto-generated constructor stub
 
 }
 
 QuadMesh::~QuadMesh() {
-	// TODO Auto-generated destructor stub
+
 }
 
-void QuadMesh::setQuads(int count, int *quads) {
-	printf("Asked to store %d quads\n", count);
-	delete this->quads;
+void QuadMesh::setQuads(std::vector<int> quads) {
+	// TODO: Exception
+	if(quads.size() % 4 != 0) return;
 	this->quads = quads;
-	this->quadCount = count;
 }
 
 void QuadMesh::render(void) {
 	glBegin(GL_QUADS);
-		for(int i=0; i<quadCount; i+=4)
+		for(int i=0; i<this->quads.size(); i+=4) {
+			mroon::Vector v = vertices[quads[i]];
+			mroon::Colour c = colours[quads[i]];
+			glVertex3f(v.x, v.y, v.z);
+		}
 	glEnd();
 }
 

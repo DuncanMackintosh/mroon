@@ -7,7 +7,7 @@
 
 #ifndef QUADMESH_H_
 #define QUADMESH_H_
-
+#include <vector>
 #include "Mesh.h"
 
 namespace mroon {
@@ -17,8 +17,7 @@ public:
 	QuadMesh();
 	virtual ~QuadMesh();
 
-	void setQuads(const int quads[]);
-	void setQuads(int count, int *quads);
+	void setQuads(std::vector<int> quads);
 
 
 	void render(void);
@@ -27,8 +26,7 @@ protected:
 	 * List of indexes into the vertices array that make up the list of quads.
 	 * Must 4*n entries, where n is the number of quads defined.
 	 **/
-	int quads[];
-	int quadCount;
+	std::vector<int> quads;
 };
 
 } /* namespace mroon */

@@ -9,15 +9,23 @@
 #define MESH_H_
 
 #include "Renderable.h"
+#include <vector>
+#include "../vectors/Vector.h"
 
 namespace mroon {
+// TODO: Move this
+typedef struct _coluor {
+	float r, g, b, a;
+} Colour;
 
 class Mesh: public mroon::Renderable {
 public:
 	virtual ~Mesh();
+	void setVertices(std::vector<Vector> vertices);
+	void setColours(std::vector<Colour> colours);
 protected:
-	int vertexCount;
-	float vertices[];
+	std::vector<mroon::Vector> vertices;
+	std::vector<mroon::Colour> colours;
 
 };
 
