@@ -18,6 +18,9 @@ namespace mroon {
 
 typedef struct _vector {
 	float x, y, z;
+public:
+	_vector(float x, float y, float z);
+	_vector();
 } Vector3;
 
 } /* namespace mroon */

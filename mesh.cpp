@@ -9,6 +9,8 @@
 #endif
 
 #include "renderables/QuadMesh.h"
+#include "vectors/Vector.h"
+#include <vector>
 
 // angle of rotation for the camera direction
 float angle = 0.0f;
@@ -24,6 +26,8 @@ float x=50.0f, z=50.0f;
 float deltaAngle = 0.0f;
 float deltaMove = 0;
 int xOrigin = -1;
+
+mroon::QuadMesh mesh;
 
 void changeSize(int w, int h) {
 
@@ -61,17 +65,45 @@ void computePos(float deltaMove) {
 float gridHeights[100][100];
 
 void init(void) {
-  for(int x=0; x<100; x++) {
-      for(int y=0; y<100; y++) {
-          gridHeights[x][y] = (float)rand()/(float)RAND_MAX * 3.0f;
-      }
-  }
+	std::vector<mroon::Vector3> vertices = std::vector<mroon::Vector3>();
+	std::vector<mroon::Colour> colours = std::vector<mroon::Colour>();
+	std::vector<int> quads = std::vector<int>();
+	for (size_t x = 0; x < 101; x++) {
+		for (size_t y = 0; y < 101; y++) {
+			float h = (float)rand()/RAND_MAX;
+			vertices.push_back(mroon::Vector3((float)x, h, float(y)));
+			colours.push_back(mroon::Colour(0.9f, h, 0.9f));
+			if(x<100 && y<100) {
+				quads.push_back(x*101+y);
+				quads.push_back((x+1)*101+y);
+				quads.push_back((x+1)*101+y+1);
+				quads.push_back(x*101+y+1);
+			}
+		}
+	}
+	mesh.setVertices(vertices);
+	mesh.setColours(colours);
+	mesh.setQuads(quads);
+	printf("Made %d quads", quads.size());
 }
 
 void renderScene(void) {
 
         if (deltaMove)
                 computePos(deltaMove);
+
+        std::vector<mroon::Colour> colours = mesh.getColours();
+        std::vector<mroon::Vector3> vertices = mesh.getVertices();
+        for(size_t x=0; x<101; x++) {
+        	for(size_t y=0; y<101; y++) {
+        		float h = vertices[x*101+y].y;
+        		h += (((float)rand()/RAND_MAX)-0.5f) * 0.1f;
+        		vertices[x*101+y].y = h;
+        		colours[x*101+y].g = h;
+        	}
+        }
+        mesh.setVertices(vertices);
+        mesh.setColours(colours);
 
         // Clear Color and Depth Buffers
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -82,38 +114,40 @@ void renderScene(void) {
         gluLookAt(      x, 5.0f, z,
                         x+lx, 5.0f,  z+lz,
                         0.0f, 1.0f,  0.0f);
-        glColor3f(0.9f, 0.9f, 0.9f);
-        glBegin(GL_QUADS);
-          for(int x=1; x<100; x++) {
-              for(int y=1; y<100; y++) {
-                  glColor3f(0.9f, gridHeights[x-1][y-1], 0.9f);
-                  glVertex3f(x-1, gridHeights[x-1][y-1], y-1);
-                  glColor3f(0.9f, gridHeights[x][y-1], 0.9f);
-                  glVertex3f(x, gridHeights[x][y-1], y-1);
-                  glColor3f(0.9f, gridHeights[x][y], 0.9f);
-                  glVertex3f(x, gridHeights[x][y], y);
-                  glColor3f(0.9f, gridHeights[x-1][y], 0.9f);
-                  glVertex3f(x-1, gridHeights[x-1][y], y);
-              }
-          }
-        glEnd();
+        mesh.render();
+//        glColor3f(0.9f, 0.9f, 0.9f);
+//        glBegin(GL_QUADS);
+//          for(int x=1; x<100; x++) {
+//              for(int y=1; y<100; y++) {
+//                  glColor3f(0.9f, gridHeights[x-1][y-1], 0.9f);
+//                  glVertex3f(x-1, gridHeights[x-1][y-1], y-1);
+//                  glColor3f(0.9f, gridHeights[x][y-1], 0.9f);
+//                  glVertex3f(x, gridHeights[x][y-1], y-1);
+//                  glColor3f(0.9f, gridHeights[x][y], 0.9f);
+//                  glVertex3f(x, gridHeights[x][y], y);
+//                  glColor3f(0.9f, gridHeights[x-1][y], 0.9f);
+//                  glVertex3f(x-1, gridHeights[x-1][y], y);
+//              }
+//          }
+//        glEnd();
 
 
+        float h = 0.0f;
         glBegin(GL_LINES);
           for(int x=1; x<100; x++) {
               for(int y=1; y<100; y++) {
 
-//                  glColor3f(0.0f, 0.2f, 0.9f);
-//                  glVertex3f(x-1, 2.0f, y-1);
-//                  glVertex3f(x, 2.0f, y-1);
-//                  glVertex3f(x-1, 2.0f, y-1);
-//                  glVertex3f(x-1, 2.0f, y);
-//
-                  glColor3f(0.0f, 0.9f, 0.2f);
-                  glVertex3f(x-1, gridHeights[x-1][y-1], y-1);
-                  glVertex3f(x, gridHeights[x][y-1], y-1);
-                  glVertex3f(x-1, gridHeights[x-1][y-1], y-1);
-                  glVertex3f(x-1, gridHeights[x-1][y], y);
+                  glColor3f(0.0f, 0.2f, 0.9f);
+                  glVertex3f(x-1, h, y-1);
+                  glVertex3f(x, h, y-1);
+                  glVertex3f(x-1, h, y-1);
+                  glVertex3f(x-1, h, y);
+
+//                  glColor3f(0.0f, 0.9f, 0.2f);
+//                  glVertex3f(x-1, gridHeights[x-1][y-1], y-1);
+//                  glVertex3f(x, gridHeights[x][y-1], y-1);
+//                  glVertex3f(x-1, gridHeights[x-1][y-1], y-1);
+//                  glVertex3f(x-1, gridHeights[x-1][y], y);
               }
           }
         glEnd();
@@ -208,3 +242,4 @@ int main(int argc, char **argv) {
 
         return 1;
 }
+

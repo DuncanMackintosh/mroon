@@ -14,15 +14,21 @@
 
 namespace mroon {
 // TODO: Move this
-typedef struct _coluor {
+struct Colour {
 	float r, g, b, a;
-} Colour;
+public:
+	Colour(float r, float g, float b, float a);
+Colour(float r, float g, float b);
+	Colour();
+};
 
 class Mesh: public mroon::Renderable {
 public:
 	virtual ~Mesh();
 	void setVertices(std::vector<Vector3> vertices);
 	void setColours(std::vector<Colour> colours);
+	std::vector<Vector3> getVertices(void);
+	std::vector<Colour> getColours(void);
 protected:
 	std::vector<mroon::Vector3> vertices;
 	std::vector<mroon::Colour> colours;
