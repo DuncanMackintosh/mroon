@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <math.h>
 
 #ifdef __APPLE__
@@ -62,7 +63,7 @@ float gridHeights[100][100];
 void init(void) {
   for(int x=0; x<100; x++) {
       for(int y=0; y<100; y++) {
-          gridHeights[x][y] = (float)random()/(float)RAND_MAX;
+          gridHeights[x][y] = (float)rand()/(float)RAND_MAX * 3.0f;
       }
   }
 }
@@ -108,11 +109,11 @@ void renderScene(void) {
 //                  glVertex3f(x-1, 2.0f, y-1);
 //                  glVertex3f(x-1, 2.0f, y);
 //
-//                  glColor3f(0.0f, 0.9f, 0.2f);
-//                  glVertex3f(x-1, gridHeights[x-1][y-1], y-1);
-//                  glVertex3f(x, gridHeights[x][y-1], y-1);
-//                  glVertex3f(x-1, gridHeights[x-1][y-1], y-1);
-//                  glVertex3f(x-1, gridHeights[x-1][y], y);
+                  glColor3f(0.0f, 0.9f, 0.2f);
+                  glVertex3f(x-1, gridHeights[x-1][y-1], y-1);
+                  glVertex3f(x, gridHeights[x][y-1], y-1);
+                  glVertex3f(x-1, gridHeights[x-1][y-1], y-1);
+                  glVertex3f(x-1, gridHeights[x-1][y], y);
               }
           }
         glEnd();
@@ -151,7 +152,7 @@ void mouseMove(int x, int y) {
          if (xOrigin >= 0) {
 
                 // update deltaAngle
-                deltaAngle = (x - xOrigin) * 0.001f;
+                deltaAngle = (x - xOrigin) * 0.01f;
 
                 // update camera's direction
                 lx = sin(angle + deltaAngle);
@@ -180,7 +181,8 @@ int main(int argc, char **argv) {
 	mroon::QuadMesh m;
 	m = mroon::QuadMesh();
 	int quads[5]= {1, 2, 3, 4, 5};
-	m.setQuads(quads);
+	printf("Quads are %d\n", sizeof(quads)/sizeof(int));
+	m.setQuads( sizeof(quads)/sizeof(int), quads);
 
   init();
         // init GLUT and create window

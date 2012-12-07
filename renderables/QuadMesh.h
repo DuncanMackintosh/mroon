@@ -18,8 +18,7 @@ public:
 	virtual ~QuadMesh();
 
 	void setQuads(const int quads[]);
-	void setQuads(int *quads, int quadCount);
-	int getQuads(int **quads);
+	void setQuads(int count, int *quads);
 
 
 	void render(void);
@@ -29,6 +28,7 @@ protected:
 	 * Must 4*n entries, where n is the number of quads defined.
 	 **/
 	int quads[];
+	int quadCount;
 };
 
 } /* namespace mroon */

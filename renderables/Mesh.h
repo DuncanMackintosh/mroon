@@ -16,6 +16,7 @@ class Mesh: public mroon::Renderable {
 public:
 	virtual ~Mesh();
 protected:
+	int vertexCount;
 	float vertices[];
 
 };
