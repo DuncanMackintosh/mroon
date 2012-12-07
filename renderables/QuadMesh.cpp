@@ -28,9 +28,10 @@ void QuadMesh::setQuads(std::vector<int> quads) {
 
 void QuadMesh::render(void) {
 	glBegin(GL_QUADS);
-		for(int i=0; i<this->quads.size(); i+=4) {
+		for(size_t i=0; i<this->quads.size(); i+=4) {
 			mroon::Vector v = vertices[quads[i]];
 			mroon::Colour c = colours[quads[i]];
+			glColor4f(c.r, c.g, c.b, c.a);
 			glVertex3f(v.x, v.y, v.z);
 		}
 	glEnd();
