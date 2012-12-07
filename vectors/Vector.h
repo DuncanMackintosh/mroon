@@ -18,7 +18,7 @@ namespace mroon {
 
 typedef struct _vector {
 	float x, y, z;
-} Vector;
+} Vector3;
 
 } /* namespace mroon */
 #endif /* VECTOR_H_ */

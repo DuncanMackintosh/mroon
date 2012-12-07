@@ -21,10 +21,10 @@ typedef struct _coluor {
 class Mesh: public mroon::Renderable {
 public:
 	virtual ~Mesh();
-	void setVertices(std::vector<Vector> vertices);
+	void setVertices(std::vector<Vector3> vertices);
 	void setColours(std::vector<Colour> colours);
 protected:
-	std::vector<mroon::Vector> vertices;
+	std::vector<mroon::Vector3> vertices;
 	std::vector<mroon::Colour> colours;
 
 };

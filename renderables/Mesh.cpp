@@ -14,7 +14,7 @@ Mesh::~Mesh() {
 
 }
 
-void Mesh::setVertices(std::vector<Vector> vertices) {
+void Mesh::setVertices(std::vector<Vector3> vertices) {
 	this->vertices = vertices;
 	Colour defColour = Colour({1.0f, 1.0f, 1.0f, 1.0f});
 	this->colours = std::vector<Colour>(vertices.size(), defColour);

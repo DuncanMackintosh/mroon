@@ -178,12 +178,6 @@ void mouseButton(int button, int state, int x, int y) {
 
 int main(int argc, char **argv) {
 
-	mroon::QuadMesh m;
-	m = mroon::QuadMesh();
-	int quads[5]= {1, 2, 3, 4, 5};
-	printf("Quads are %d\n", sizeof(quads)/sizeof(int));
-//	m.setQuads( sizeof(quads)/sizeof(int), quads);
-
   init();
         // init GLUT and create window
         glutInit(&argc, argv);
