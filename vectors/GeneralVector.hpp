@@ -11,14 +11,15 @@
 #include <vector>
 #include <string>
 
-class GeneralVector {
-	int numComponents;
-	float* components;
+
+
+template <int N = 3> class GeneralVector {
+	float components[N];
 
 public:
-	GeneralVector(int _numComponents, float _components[]);
-	GeneralVector(int _numComponents);
-	~GeneralVector();
+	GeneralVector();
+	GeneralVector(float _components[N]);
+	virtual ~GeneralVector();
 
 	int size();
 	void set(int idx, float val);
@@ -31,10 +32,16 @@ public:
 	GeneralVector scalarMultiply(float k);
 	std::string stringRep();
 
+	GeneralVector<N>& operator=(const GeneralVector<N> &rhs);
+	float& operator[](size_t idx);
+	const float operator[](size_t idx) const;
+
 private:
-	void create(int _numComponents);
+	void create();
 
 };
+
+typedef GeneralVector<3> Vector3;
 
 
 #endif /* GENERALVECTOR_H_ */

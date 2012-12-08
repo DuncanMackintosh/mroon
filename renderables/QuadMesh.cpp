@@ -32,6 +32,7 @@ void QuadMesh::render(void) {
 			mroon::Vector3 v = vertices[quads[i]];
 			mroon::Colour c = colours[quads[i]];
 			glColor4f(c.r, c.g, c.b, c.a);
+			glNormal3f(0.0f, 1.0f, 0.0f);
 			glVertex3f(v.x, v.y, v.z);
 		}
 	glEnd();

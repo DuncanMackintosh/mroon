@@ -11,7 +11,7 @@
 #include "renderables/QuadMesh.h"
 #include "vectors/Vector.h"
 #include <vector>
-#include "vectors/vector3.h"
+#include "vectors/vector3.hpp"
 #include <iostream>
 
 // angle of rotation for the camera direction
@@ -96,16 +96,16 @@ void renderScene(void) {
 
         std::vector<mroon::Colour> colours = mesh.getColours();
         std::vector<mroon::Vector3> vertices = mesh.getVertices();
-        for(size_t x=0; x<101; x++) {
+        for(size_t x_foof=0; x_foof<101; x_foof++) {
         	for(size_t y=0; y<101; y++) {
-        		float h = vertices[x*101+y].y;
+        		float h = vertices[x_foof*101+y].y;
         		h += (((float)rand()/RAND_MAX)-0.5f) * 0.1f;
-        		vertices[x*101+y].y = h;
-        		colours[x*101+y].g = h;
+        		vertices[x_foof*101+y].y = h;
+        		colours[x_foof*101+y].g = h;
         	}
         }
-        mesh.setVertices(vertices);
-        mesh.setColours(colours);
+//        mesh.setVertices(vertices);
+//        mesh.setColours(colours);
 
         // Clear Color and Depth Buffers
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -218,14 +218,21 @@ int main(int argc, char **argv) {
 //	val1.push_back(-2.0f);
 //	val1.push_back(1.0f);
 	float val1[] = {5.0f, -2.0f, 1.0f};
-	vector3 vec1 = vector3(val1);
+	GeneralVector<3> vec1;
+	vec1 = GeneralVector<3>(val1);
+	printf("vec1 is %f %f %f\n", vec1[0], vec1[1], vec1[2]);
+	printf("vec1 is now %f %f %f\n", vec1[0], vec1[1], vec1[2]);
+	Vector3 v = Vector3(val1);
+	v.length();
+
 
 //	std::vector<float> val2 = std::vector<float>();
 //	val2.push_back(15.0f);
 //	val2.push_back(7.0f);
 //	val2.push_back(1.0f);
 	float val2[] = {15.0f, 7.0f, 1.0f};
-	vector3 vec2 = vector3(val2);
+	GeneralVector<> vec2 = GeneralVector<>(val2);
+
 
 	std::cout << vec1.stringRep() << std::endl;
 	std::cout << vec2.stringRep() << std::endl;
@@ -235,7 +242,7 @@ int main(int argc, char **argv) {
 	std::cout << (vec1.crossProduct(vec2)).stringRep() << std::endl;
 	std::cout << vec1.length() << std::endl;
 	std::cout << (vec1.scalarMultiply(1.5)).stringRep() << std::endl;
-
+ return 0;
   init();
         // init GLUT and create window
         glutInit(&argc, argv);

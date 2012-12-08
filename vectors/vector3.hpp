@@ -8,14 +8,14 @@
 #ifndef VECTOR3_H_
 #define VECTOR3_H_
 
-#include "GeneralVector.h"
+#include "GeneralVector.hpp"
 #include <vector>
 
-class vector3 : public GeneralVector {
+class vector3 : public GeneralVector<> {
 public:
-	vector3 (float components[]);
-	vector3();
-};
+	vector3() : GeneralVector(){};
+	vector3(float values[3]) : GeneralVector(values){};
 
+};
 
 #endif /* VECTOR3_H_ */

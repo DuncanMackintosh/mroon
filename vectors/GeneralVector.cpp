@@ -5,56 +5,51 @@
  *      Author: Mel
  */
 
-#include "GeneralVector.h"
+#include "GeneralVector.hpp"
 #include <math.h>
 #include <sstream>
 
-GeneralVector::GeneralVector(int _numComponents, float _components[]) {
-	create(_numComponents);
-	for(int i = 0; i < numComponents; ++i) {
+
+template <int N> GeneralVector<N>::GeneralVector() {
+}
+
+template <int N> GeneralVector<N>::GeneralVector(float _components[N]) {
+	for(int i = 0; i < N; ++i) {
 		components[i] = _components[i];
 	}
 }
 
-GeneralVector::GeneralVector(int _numComponents) {
-	create(_numComponents);
+
+template <int N> int GeneralVector<N>::size() {
+	return N;
 }
 
-void GeneralVector::create(int _numComponents) {
-	numComponents = _numComponents;
-	components = new float[numComponents];
-}
-
-int GeneralVector::size() {
-	return numComponents;
-}
-
-float GeneralVector::componentAt(int idx) {
+template <int N> float GeneralVector<N>::componentAt(int idx) {
 	return components[idx];
 }
 
-void GeneralVector::set(int idx, float val) {
+template <int N> void GeneralVector<N>::set(int idx, float val) {
 	components[idx] = val;
 }
-GeneralVector GeneralVector::add(GeneralVector vec) {
+template <int N> GeneralVector<N> GeneralVector<N>::add(GeneralVector<N> vec) {
 	if(size() != vec.size()) return 0; // Error case
-	GeneralVector ret = GeneralVector(numComponents);
+	GeneralVector<N> ret = GeneralVector<N>();
 	for(int i = 0; i < size(); ++i) {
 		ret.set(i, components[i] + vec.componentAt(i));
 	}
 	return ret;
 }
 
-GeneralVector GeneralVector::subtract(GeneralVector vec) {
+template <int N> GeneralVector<N> GeneralVector<N>::subtract(GeneralVector vec) {
 	if(size() != vec.size()) return 0; // Error case
-	GeneralVector ret = GeneralVector(numComponents);
+	GeneralVector<N> ret = GeneralVector<N>();
 	for(int i = 0; i < size(); ++i) {
 		ret.set(i, components[i] + (-1.0f * vec.componentAt(i)));
 	}
 	return ret;
 }
 
-float GeneralVector::dotProduct(GeneralVector vec) {
+template <int N> float GeneralVector<N>::dotProduct(GeneralVector vec) {
 	if(size() != vec.size()) return 0; // Error case... a crap error case.
 	float ret = 0;
 	for(int i = 0; i < size(); ++i) {
@@ -63,9 +58,9 @@ float GeneralVector::dotProduct(GeneralVector vec) {
 	return ret;
 }
 
-GeneralVector GeneralVector::crossProduct(GeneralVector vec) {
+template <int N> GeneralVector<N> GeneralVector<N>::crossProduct(GeneralVector vec) {
 	if(size() != vec.size()) return 0;
-	GeneralVector ret = GeneralVector(size());
+	GeneralVector<N> ret = GeneralVector<N>();
 	for(int i = 0; i < size(); ++i) {
 		ret.set(i, components[(i+1) % size()] * vec.componentAt((i+2) % size())
 				- vec.componentAt((i + 1) % size()) * components[(i + 2) % size()]);
@@ -73,7 +68,7 @@ GeneralVector GeneralVector::crossProduct(GeneralVector vec) {
 	return ret;
 }
 
-float GeneralVector::length() {
+template <int N> float GeneralVector<N>::length() {
 	float ret = 0;
 	for(int i = 0; i < size(); ++i) {
 		ret += pow(components[i], 2);
@@ -82,15 +77,15 @@ float GeneralVector::length() {
 	return ret;
 }
 
-GeneralVector GeneralVector::scalarMultiply(float k) {
-	GeneralVector ret = GeneralVector(size());
+template <int N> GeneralVector<N> GeneralVector<N>::scalarMultiply(float k) {
+	GeneralVector<N> ret = GeneralVector<N>();
 	for(int i = 0; i < size(); ++i) {
 		ret.set(i, components[i] * k);
 	}
 	return ret;
 }
 
-std::string GeneralVector::stringRep() {
+template <int N> std::string GeneralVector<N>::stringRep() {
 	std::string ret = "[";
 
 	for(int i = 0; i < size(); ++i) {
@@ -104,9 +99,30 @@ std::string GeneralVector::stringRep() {
 	return ret;
 }
 
-GeneralVector::~GeneralVector() {
+template <int N> GeneralVector<N>::~GeneralVector() {
 	//Nothing~
 }
 
+template<int N>
+inline GeneralVector<N>& GeneralVector<N>::operator =(
+		const GeneralVector<N>& rhs) {
+	for(int i=0; i<N; i++) {
+		components[i] = rhs.components[i];
+	}
+	return *this;
+}
+
+template<int N>
+inline float& GeneralVector<N>::operator [](size_t idx) {
+	return components[idx];
+}
+
+template<int N>
+inline const float GeneralVector<N>::operator [](size_t idx) const {
+	return components[idx];
+}
+
+
+template class GeneralVector<3>;
 
 

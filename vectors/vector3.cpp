@@ -5,15 +5,7 @@
  *      Author: Mel
  */
 
-#include "vector3.h"
+#include "vector3.hpp"
 
-vector3::vector3 ()
-	: GeneralVector(3) {
 
-}
-
-vector3::vector3(float components[])
-	: GeneralVector(3, components) {
-
-}
 
