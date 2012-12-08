@@ -13,10 +13,10 @@
 
 class GeneralVector {
 	int numComponents;
-	std::vector<float> components;
+	float* components;
 
 public:
-	GeneralVector(int _numComponents, std::vector<float> _components);
+	GeneralVector(int _numComponents, float _components[]);
 	GeneralVector(int _numComponents);
 	~GeneralVector();
 

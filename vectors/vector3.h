@@ -13,7 +13,7 @@
 
 class vector3 : public GeneralVector {
 public:
-	vector3 (std::vector<float> components);
+	vector3 (float components[]);
 	vector3();
 };
 

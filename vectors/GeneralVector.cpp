@@ -9,7 +9,7 @@
 #include <math.h>
 #include <sstream>
 
-GeneralVector::GeneralVector(int _numComponents, std::vector<float> _components) {
+GeneralVector::GeneralVector(int _numComponents, float _components[]) {
 	create(_numComponents);
 	for(int i = 0; i < numComponents; ++i) {
 		components[i] = _components[i];
@@ -22,7 +22,7 @@ GeneralVector::GeneralVector(int _numComponents) {
 
 void GeneralVector::create(int _numComponents) {
 	numComponents = _numComponents;
-	components = std::vector<float>(numComponents);
+	components = new float[numComponents];
 }
 
 int GeneralVector::size() {

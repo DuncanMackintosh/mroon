@@ -12,7 +12,7 @@ vector3::vector3 ()
 
 }
 
-vector3::vector3(std::vector<float> components)
+vector3::vector3(float components[])
 	: GeneralVector(3, components) {
 
 }

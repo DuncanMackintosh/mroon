@@ -213,16 +213,18 @@ void mouseButton(int button, int state, int x, int y) {
 }
 
 int main(int argc, char **argv) {
-	std::vector<float> val1 = std::vector<float>();
-	val1.push_back(5.0f);
-	val1.push_back(-2.0f);
-	val1.push_back(1.0f);
+//	std::vector<float> val1 = std::vector<float>();
+//	val1.push_back(5.0f);
+//	val1.push_back(-2.0f);
+//	val1.push_back(1.0f);
+	float val1[] = {5.0f, -2.0f, 1.0f};
 	vector3 vec1 = vector3(val1);
 
-	std::vector<float> val2 = std::vector<float>();
-	val2.push_back(15.0f);
-	val2.push_back(7.0f);
-	val2.push_back(1.0f);
+//	std::vector<float> val2 = std::vector<float>();
+//	val2.push_back(15.0f);
+//	val2.push_back(7.0f);
+//	val2.push_back(1.0f);
+	float val2[] = {15.0f, 7.0f, 1.0f};
 	vector3 vec2 = vector3(val2);
 
 	std::cout << vec1.stringRep() << std::endl;
