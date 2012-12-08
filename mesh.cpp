@@ -11,6 +11,8 @@
 #include "renderables/QuadMesh.h"
 #include "vectors/Vector.h"
 #include <vector>
+#include "vectors/vector3.h"
+#include <iostream>
 
 // angle of rotation for the camera direction
 float angle = 0.0f;
@@ -211,6 +213,26 @@ void mouseButton(int button, int state, int x, int y) {
 }
 
 int main(int argc, char **argv) {
+	std::vector<float> val1 = std::vector<float>();
+	val1.push_back(5.0f);
+	val1.push_back(-2.0f);
+	val1.push_back(1.0f);
+	vector3 vec1 = vector3(val1);
+
+	std::vector<float> val2 = std::vector<float>();
+	val2.push_back(15.0f);
+	val2.push_back(7.0f);
+	val2.push_back(1.0f);
+	vector3 vec2 = vector3(val2);
+
+	std::cout << vec1.stringRep() << std::endl;
+	std::cout << vec2.stringRep() << std::endl;
+	std::cout << (vec1.add(vec2)).stringRep() << std::endl;
+	std::cout << (vec1.subtract(vec2)).stringRep() << std::endl;
+	std::cout << vec1.dotProduct(vec2) << std::endl;
+	std::cout << (vec1.crossProduct(vec2)).stringRep() << std::endl;
+	std::cout << vec1.length() << std::endl;
+	std::cout << (vec1.scalarMultiply(1.5)).stringRep() << std::endl;
 
   init();
         // init GLUT and create window
