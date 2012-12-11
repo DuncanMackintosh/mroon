@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <iostream>
 
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -213,36 +214,43 @@ void mouseButton(int button, int state, int x, int y) {
 }
 
 int main(int argc, char **argv) {
+	Vector3 v;
+	float fs[] = {1.0f, 1.0f, 1.0f};
+	v = Vector3(1.0f, 2.0f, 3.0f);
+	std::cout << v.stringRep();
+	std::cout <<"\n";
+	std::cout << v.length();
+	std::cout <<"\n";
 //	std::vector<float> val1 = std::vector<float>();
-//	val1.push_back(5.0f);
-//	val1.push_back(-2.0f);
-//	val1.push_back(1.0f);
-	float val1[] = {5.0f, -2.0f, 1.0f};
-	GeneralVector<3> vec1;
-	vec1 = GeneralVector<3>(val1);
-	printf("vec1 is %f %f %f\n", vec1[0], vec1[1], vec1[2]);
-	printf("vec1 is now %f %f %f\n", vec1[0], vec1[1], vec1[2]);
-	Vector3 v = Vector3(val1);
-	v.length();
-
-
-//	std::vector<float> val2 = std::vector<float>();
-//	val2.push_back(15.0f);
-//	val2.push_back(7.0f);
-//	val2.push_back(1.0f);
-	float val2[] = {15.0f, 7.0f, 1.0f};
-	GeneralVector<> vec2 = GeneralVector<>(val2);
-
-
-	std::cout << vec1.stringRep() << std::endl;
-	std::cout << vec2.stringRep() << std::endl;
-	std::cout << (vec1.add(vec2)).stringRep() << std::endl;
-	std::cout << (vec1.subtract(vec2)).stringRep() << std::endl;
-	std::cout << vec1.dotProduct(vec2) << std::endl;
-	std::cout << (vec1.crossProduct(vec2)).stringRep() << std::endl;
-	std::cout << vec1.length() << std::endl;
-	std::cout << (vec1.scalarMultiply(1.5)).stringRep() << std::endl;
- return 0;
+////	val1.push_back(5.0f);
+////	val1.push_back(-2.0f);
+////	val1.push_back(1.0f);
+//	float val1[] = {5.0f, -2.0f, 1.0f};
+//	GeneralVector<3> vec1;
+//	vec1 = GeneralVector<3>(val1);
+//	printf("vec1 is %f %f %f\n", vec1[0], vec1[1], vec1[2]);
+//	printf("vec1 is now %f %f %f\n", vec1[0], vec1[1], vec1[2]);
+//	Vector3 v = Vector3(val1);
+//	v.length();
+//
+//
+////	std::vector<float> val2 = std::vector<float>();
+////	val2.push_back(15.0f);
+////	val2.push_back(7.0f);
+////	val2.push_back(1.0f);
+//	float val2[] = {15.0f, 7.0f, 1.0f};
+//	GeneralVector<> vec2 = GeneralVector<>(val2);
+//
+//
+//	std::cout << vec1.stringRep() << std::endl;
+//	std::cout << vec2.stringRep() << std::endl;
+//	std::cout << (vec1.add(vec2)).stringRep() << std::endl;
+//	std::cout << (vec1.subtract(vec2)).stringRep() << std::endl;
+//	std::cout << vec1.dotProduct(vec2) << std::endl;
+//	std::cout << (vec1.crossProduct(vec2)).stringRep() << std::endl;
+//	std::cout << vec1.length() << std::endl;
+//	std::cout << (vec1.scalarMultiply(1.5)).stringRep() << std::endl;
+// return 0;
   init();
         // init GLUT and create window
         glutInit(&argc, argv);

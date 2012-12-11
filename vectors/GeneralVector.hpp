@@ -14,6 +14,7 @@
 
 
 template <int N = 3> class GeneralVector {
+protected:
 	float components[N];
 
 public:
@@ -40,8 +41,6 @@ private:
 	void create();
 
 };
-
-typedef GeneralVector<3> Vector3;
 
 
 #endif /* GENERALVECTOR_H_ */

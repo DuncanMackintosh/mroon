@@ -11,10 +11,11 @@
 #include "GeneralVector.hpp"
 #include <vector>
 
-class vector3 : public GeneralVector<> {
+class Vector3 : public GeneralVector<3> {
 public:
-	vector3() : GeneralVector(){};
-	vector3(float values[3]) : GeneralVector(values){};
+	Vector3() : GeneralVector<3>(){};
+	Vector3(float values[3]) : GeneralVector<3>(values){};
+	Vector3(float x, float y, float z);
 
 };
 
