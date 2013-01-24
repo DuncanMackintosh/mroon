@@ -21,6 +21,11 @@ typedef struct _vector {
 public:
 	_vector(float x, float y, float z);
 	_vector();
+	struct _vector operator-(struct _vector o);
+	struct _vector operator+(struct _vector o);
+	struct _vector operator/(float divisor);
+	struct _vector operator*(float multiplier);
+	char* toString();
 } Vector3;
 
 } /* namespace mroon */

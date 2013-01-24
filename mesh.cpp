@@ -9,12 +9,18 @@
 #include <GL/glut.h>
 #endif
 
-#include "renderables/QuadMesh.h"
-#include "vectors/Vector.h"
+#include "renderables/QuadMesh.hpp"
+#include "renderables/TriMesh.hpp"
+#include "fbx_loader/FBXMeshLoader.hpp"
+#include "vectors/Vector.hpp"
 #include <vector>
-#include "vectors/vector3.hpp"
+#include "vectors/Vector3.hpp"
 #include <iostream>
-
+#include <fbxsdk.h>
+void DestroySdkObjects(FbxManager* pManager, bool pExitStatus);
+void InitializeSdkObjects(FbxManager*& pManager, FbxScene*& pScene);
+bool LoadScene(FbxManager* pManager, FbxDocument* pScene, const char* pFilename);
+bool loadFBXMeshes(char* file);
 // angle of rotation for the camera direction
 float angle = 0.0f;
 
@@ -31,11 +37,12 @@ float deltaMove = 0;
 int xOrigin = -1;
 
 mroon::QuadMesh mesh;
+std::vector<mroon::MixedMesh> table;
 
 void changeSize(int w, int h) {
 
         // Prevent a divide by zero, when window is too short
-        // (you cant make a window of zero width).
+        // (you can't make a window of zero width).
         if (h == 0)
                 h = 1;
 
@@ -87,7 +94,9 @@ void init(void) {
 	mesh.setVertices(vertices);
 	mesh.setColours(colours);
 	mesh.setQuads(quads);
-	printf("Made %d quads", quads.size());
+	printf("Made %zd quads\n", quads.size());
+	loadFBXMeshes("/pers/table2.fbx");
+
 }
 
 void renderScene(void) {
@@ -115,45 +124,29 @@ void renderScene(void) {
         glLoadIdentity();
         // Set the camera
         gluLookAt(      x, 5.0f, z,
-                        x+lx, 5.0f,  z+lz,
+//                        x+lx, 5.0f,  z+lz,
+        				2.243161f, 0.0f, 2.243161f,
                         0.0f, 1.0f,  0.0f);
-        mesh.render();
-//        glColor3f(0.9f, 0.9f, 0.9f);
-//        glBegin(GL_QUADS);
+//        mesh.render();
+
+        for(size_t i=0; i<table.size(); i++) {
+        	table[i].render();
+        }
+
+//        float h = 0.0f;
+//        glBegin(GL_LINES);
 //          for(int x=1; x<100; x++) {
 //              for(int y=1; y<100; y++) {
-//                  glColor3f(0.9f, gridHeights[x-1][y-1], 0.9f);
-//                  glVertex3f(x-1, gridHeights[x-1][y-1], y-1);
-//                  glColor3f(0.9f, gridHeights[x][y-1], 0.9f);
-//                  glVertex3f(x, gridHeights[x][y-1], y-1);
-//                  glColor3f(0.9f, gridHeights[x][y], 0.9f);
-//                  glVertex3f(x, gridHeights[x][y], y);
-//                  glColor3f(0.9f, gridHeights[x-1][y], 0.9f);
-//                  glVertex3f(x-1, gridHeights[x-1][y], y);
+//
+//                  glColor3f(0.0f, 0.2f, 0.9f);
+//                  glVertex3f(x-1, h, y-1);
+//                  glVertex3f(x, h, y-1);
+//                  glVertex3f(x-1, h, y-1);
+//                  glVertex3f(x-1, h, y);
+//
 //              }
 //          }
 //        glEnd();
-
-
-        float h = 0.0f;
-        glBegin(GL_LINES);
-          for(int x=1; x<100; x++) {
-              for(int y=1; y<100; y++) {
-
-                  glColor3f(0.0f, 0.2f, 0.9f);
-                  glVertex3f(x-1, h, y-1);
-                  glVertex3f(x, h, y-1);
-                  glVertex3f(x-1, h, y-1);
-                  glVertex3f(x-1, h, y);
-
-//                  glColor3f(0.0f, 0.9f, 0.2f);
-//                  glVertex3f(x-1, gridHeights[x-1][y-1], y-1);
-//                  glVertex3f(x, gridHeights[x][y-1], y-1);
-//                  glVertex3f(x-1, gridHeights[x-1][y-1], y-1);
-//                  glVertex3f(x-1, gridHeights[x-1][y], y);
-              }
-          }
-        glEnd();
 
 
 
@@ -213,44 +206,57 @@ void mouseButton(int button, int state, int x, int y) {
         }
 }
 
+bool loadFBXMeshes(char* file) {
+    FbxManager* lSdkManager = NULL;
+    FbxScene* lScene = NULL;
+    bool lResult;
+
+    // Prepare the FBX SDK.
+    InitializeSdkObjects(lSdkManager, lScene);
+    // Load the scene.
+
+    // The example can take a FBX file as an argument.
+	lResult = LoadScene(lSdkManager, lScene, file);
+	if (lResult) {
+		FbxNode* lNode = lScene->GetRootNode();
+
+		if (lNode) {
+			for (int i = 0; i < lNode->GetChildCount(); i++) {
+				FbxNodeAttribute::EType lAttributeType;
+				if (lNode->GetChild(i)->GetNodeAttribute() == NULL) {
+					printf("NULL Node Attribute\n\n");
+				} else {
+					lAttributeType =
+							(lNode->GetChild(i)->GetNodeAttribute()->GetAttributeType());
+
+					if (lAttributeType != FbxNodeAttribute::eMesh) {
+						continue;
+					}
+					FbxMesh* fbxMesh = (FbxMesh *) lNode->GetChild(i)->GetNodeAttribute();
+					mroon::MixedMesh mesh = LoadFBXMesh(fbxMesh);
+					table.push_back(mesh);
+					mesh.dbgBounds();
+				}
+
+			}
+		} else {
+			printf("No root node in scene\n");
+		}
+	} else {
+		printf("Failed to load scene\n");
+	}
+	printf("Loading %zd meshes for table\n", table.size());
+	return true;
+}
+
 int main(int argc, char **argv) {
 	Vector3 v;
-	float fs[] = {1.0f, 1.0f, 1.0f};
 	v = Vector3(1.0f, 2.0f, 3.0f);
 	std::cout << v.stringRep();
 	std::cout <<"\n";
 	std::cout << v.length();
 	std::cout <<"\n";
-//	std::vector<float> val1 = std::vector<float>();
-////	val1.push_back(5.0f);
-////	val1.push_back(-2.0f);
-////	val1.push_back(1.0f);
-//	float val1[] = {5.0f, -2.0f, 1.0f};
-//	GeneralVector<3> vec1;
-//	vec1 = GeneralVector<3>(val1);
-//	printf("vec1 is %f %f %f\n", vec1[0], vec1[1], vec1[2]);
-//	printf("vec1 is now %f %f %f\n", vec1[0], vec1[1], vec1[2]);
-//	Vector3 v = Vector3(val1);
-//	v.length();
-//
-//
-////	std::vector<float> val2 = std::vector<float>();
-////	val2.push_back(15.0f);
-////	val2.push_back(7.0f);
-////	val2.push_back(1.0f);
-//	float val2[] = {15.0f, 7.0f, 1.0f};
-//	GeneralVector<> vec2 = GeneralVector<>(val2);
-//
-//
-//	std::cout << vec1.stringRep() << std::endl;
-//	std::cout << vec2.stringRep() << std::endl;
-//	std::cout << (vec1.add(vec2)).stringRep() << std::endl;
-//	std::cout << (vec1.subtract(vec2)).stringRep() << std::endl;
-//	std::cout << vec1.dotProduct(vec2) << std::endl;
-//	std::cout << (vec1.crossProduct(vec2)).stringRep() << std::endl;
-//	std::cout << vec1.length() << std::endl;
-//	std::cout << (vec1.scalarMultiply(1.5)).stringRep() << std::endl;
-// return 0;
+
   init();
         // init GLUT and create window
         glutInit(&argc, argv);
@@ -281,4 +287,76 @@ int main(int argc, char **argv) {
 
         return 1;
 }
+bool LoadScene(FbxManager* pManager, FbxDocument* pScene, const char* pFilename)
+{
+    int lFileMajor, lFileMinor, lFileRevision;
+    int lSDKMajor,  lSDKMinor,  lSDKRevision;
+    bool lStatus;
 
+    // Get the file version number generate by the FBX SDK.
+    FbxManager::GetFileFormatVersion(lSDKMajor, lSDKMinor, lSDKRevision);
+
+    // Create an importer.
+    FbxImporter* lImporter = FbxImporter::Create(pManager,"");
+
+    // Initialize the importer by providing a filename.
+    const bool lImportStatus = lImporter->Initialize(pFilename, -1, pManager->GetIOSettings());
+    lImporter->GetFileVersion(lFileMajor, lFileMinor, lFileRevision);
+
+    if( !lImportStatus )
+    {
+//        FBXSDK_printf("Call to FbxImporter::Initialize() failed.\n");
+//        FBXSDK_printf("Error returned: %s\n\n", lImporter->GetLastErrorString());
+//
+//        if (lImporter->GetLastErrorID() == FbxIOBase::eFileVersionNotSupportedYet ||
+//            lImporter->GetLastErrorID() == FbxIOBase::eFileVersionNotSupportedAnymore)
+//        {
+//            FBXSDK_printf("FBX file format version for this FBX SDK is %d.%d.%d\n", lSDKMajor, lSDKMinor, lSDKRevision);
+//            FBXSDK_printf("FBX file format version for file '%s' is %d.%d.%d\n\n", pFilename, lFileMajor, lFileMinor, lFileRevision);
+//        }
+
+        return false;
+    }
+
+
+    // Import the scene.
+    lStatus = lImporter->Import(pScene);
+    // Destroy the importer.
+    lImporter->Destroy();
+    return lStatus;
+}
+
+void InitializeSdkObjects(FbxManager*& pManager, FbxScene*& pScene)
+{
+    //The first thing to do is to create the FBX Manager which is the object allocator for almost all the classes in the SDK
+    pManager = FbxManager::Create();
+    if( !pManager )
+    {
+        FBXSDK_printf("Error: Unable to create FBX Manager!\n");
+        exit(1);
+    }
+	else FBXSDK_printf("Autodesk FBX SDK version %s\n", pManager->GetVersion());
+
+	//Create an IOSettings object. This object holds all import/export settings.
+	FbxIOSettings* ios = FbxIOSettings::Create(pManager, IOSROOT);
+	pManager->SetIOSettings(ios);
+
+	//Load plugins from the executable directory (optional)
+	FbxString lPath = FbxGetApplicationDirectory();
+	pManager->LoadPluginsDirectory(lPath.Buffer());
+
+    //Create an FBX scene. This object holds most objects imported/exported from/to files.
+    pScene = FbxScene::Create(pManager, "My Scene");
+	if( !pScene )
+    {
+        FBXSDK_printf("Error: Unable to create FBX scene!\n");
+        exit(1);
+    }
+}
+
+void DestroySdkObjects(FbxManager* pManager, bool pExitStatus)
+{
+    //Delete the FBX Manager. All the objects that have been allocated using the FBX Manager and that haven't been explicitly destroyed are also automatically destroyed.
+    if( pManager ) pManager->Destroy();
+	if( pExitStatus ) FBXSDK_printf("Program Success!\n");
+}

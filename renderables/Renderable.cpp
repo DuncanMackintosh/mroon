@@ -5,7 +5,7 @@
  *      Author: duncanm
  */
 
-#include "Renderable.h"
+#include "Renderable.hpp"
 
 namespace mroon {
 Renderable::~Renderable(){

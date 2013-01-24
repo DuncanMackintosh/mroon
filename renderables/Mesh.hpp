@@ -8,9 +8,9 @@
 #ifndef MESH_H_
 #define MESH_H_
 
-#include "Renderable.h"
+#include "Renderable.hpp"
 #include <vector>
-#include "../vectors/Vector.h"
+#include "../vectors/Vector.hpp"
 
 namespace mroon {
 // TODO: Move this
@@ -29,6 +29,7 @@ public:
 	void setColours(std::vector<Colour> colours);
 	std::vector<Vector3> getVertices(void);
 	std::vector<Colour> getColours(void);
+	void dbgBounds(void);
 protected:
 	std::vector<mroon::Vector3> vertices;
 	std::vector<mroon::Colour> colours;

@@ -5,7 +5,7 @@
  *      Author: Mel
  */
 
-#include "vector3.hpp"
+#include "Vector3.hpp"
 
 Vector3::Vector3(float x, float y, float z) {
 	components[0] = x;

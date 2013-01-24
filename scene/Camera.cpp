@@ -18,4 +18,8 @@ Camera::~Camera() {
 	// TODO Auto-generated destructor stub
 }
 
+void Camera::apply(void) {
+
+}
+
 } /* namespace mroon */
