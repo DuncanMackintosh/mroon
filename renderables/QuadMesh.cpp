@@ -31,8 +31,9 @@ void QuadMesh::render(void) {
 		for(size_t i=0; i<this->quads.size(); i++) {
 			mroon::Vector3 v = vertices[quads[i]];
 			mroon::Colour c = colours[quads[i]];
+			mroon::Vector3 n = normals[quads[i]];
 			glColor4f(c.r, c.g, c.b, c.a);
-			glNormal3f(0.0f, 1.0f, 0.0f);
+			glNormal3f(n.x, n.y, n.z);
 			glVertex3f(v.x, v.y, v.z);
 		}
 	glEnd();
@@ -47,7 +48,7 @@ void MixedMesh::setPolys(std::vector<int> refs, std::vector<int> polysizes) {
 }
 
 void MixedMesh::render(void) {
-	size_t r = 0;
+	int r = 0;
 	for(size_t i=0; i<this->polysizes.size(); i++) {
 		if(this->polysizes[i] == 3) {
 			glBegin(GL_TRIANGLES);
@@ -56,11 +57,13 @@ void MixedMesh::render(void) {
 		} else {
 			continue;
 		}
-		for(size_t j=0; j<this->polysizes[i]; j++) {
-			mroon::Vector3 v = vertices[this->refs[i]];
-			mroon::Colour c = colours[this->refs[i]];
+		for(int j=0; j<this->polysizes[i]; j++) {
+			int ref = r++;
+			mroon::Vector3 v = vertices[this->refs[ref]];
+			mroon::Colour c = colours[this->refs[ref]];
+			mroon::Vector3 n = normals[ref];
 			glColor4f(c.r, c.g, c.b, c.a);
-			glNormal3f(0.0f, 1.0f, 0.0f);
+			glNormal3f(n.x, n.y, n.z);
 			glVertex3f(v.x, v.y, v.z);
 		}
 		glEnd();

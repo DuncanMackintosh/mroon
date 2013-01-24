@@ -124,8 +124,8 @@ void renderScene(void) {
         glLoadIdentity();
         // Set the camera
         gluLookAt(      x, 5.0f, z,
-//                        x+lx, 5.0f,  z+lz,
-        				2.243161f, 0.0f, 2.243161f,
+                        x+lx, 5.0f,  z+lz,
+//        				2.243161f, 0.0f, 2.243161f,
                         0.0f, 1.0f,  0.0f);
 //        mesh.render();
 
@@ -133,20 +133,20 @@ void renderScene(void) {
         	table[i].render();
         }
 
-//        float h = 0.0f;
-//        glBegin(GL_LINES);
-//          for(int x=1; x<100; x++) {
-//              for(int y=1; y<100; y++) {
-//
-//                  glColor3f(0.0f, 0.2f, 0.9f);
-//                  glVertex3f(x-1, h, y-1);
-//                  glVertex3f(x, h, y-1);
-//                  glVertex3f(x-1, h, y-1);
-//                  glVertex3f(x-1, h, y);
-//
-//              }
-//          }
-//        glEnd();
+        float h = 0.0f;
+        glBegin(GL_LINES);
+          for(int x=1; x<100; x++) {
+              for(int y=1; y<100; y++) {
+
+                  glColor3f(0.0f, 0.2f, 0.9f);
+                  glVertex3f(x-1, h, y-1);
+                  glVertex3f(x, h, y-1);
+                  glVertex3f(x-1, h, y-1);
+                  glVertex3f(x-1, h, y);
+
+              }
+          }
+        glEnd();
 
 
 

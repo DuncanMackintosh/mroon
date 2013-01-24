@@ -26,12 +26,14 @@ class Mesh: public mroon::Renderable {
 public:
 	virtual ~Mesh();
 	void setVertices(std::vector<Vector3> vertices);
+	void setNormals(std::vector<Vector3> normals);
 	void setColours(std::vector<Colour> colours);
 	std::vector<Vector3> getVertices(void);
 	std::vector<Colour> getColours(void);
 	void dbgBounds(void);
 protected:
 	std::vector<mroon::Vector3> vertices;
+	std::vector<mroon::Vector3> normals;
 	std::vector<mroon::Colour> colours;
 
 };

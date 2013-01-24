@@ -21,6 +21,11 @@ void Mesh::setVertices(std::vector<Vector3> vertices) {
 	Colour defColour = Colour(1.0f, 1.0f, 1.0f, 1.0f);
 	this->colours = std::vector<Colour>(vertices.size(), defColour);
 }
+
+void Mesh::setNormals(std::vector<Vector3> normals) {
+	this->normals = normals;
+}
+
 std::vector<Vector3> Mesh::getVertices(void) {
 	return this->vertices;
 }
