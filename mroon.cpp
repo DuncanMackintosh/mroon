@@ -95,7 +95,7 @@ void init(void) {
 	mesh.setColours(colours);
 	mesh.setQuads(quads);
 	printf("Made %zd quads\n", quads.size());
-	loadFBXMeshes("/pers/table2.fbx");
+	loadFBXMeshes("table2.fbx");
 
 }
 
