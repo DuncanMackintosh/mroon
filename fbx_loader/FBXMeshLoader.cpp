@@ -1,5 +1,6 @@
 #include "FBXMeshLoader.hpp"
 #include <vector>
+#include <math.h>
 mroon::MixedMesh LoadFBXMesh(FbxMesh* pMesh, float scale) {
 	int i, j;
 	int lPolygonCount = pMesh->GetPolygonCount();
@@ -9,6 +10,7 @@ mroon::MixedMesh LoadFBXMesh(FbxMesh* pMesh, float scale) {
 	std::vector<mroon::Colour> colours;
 	std::vector<int> refs;
 	std::vector<int> sizes;
+	float r, g, b;
 
 	FbxVector4* lControlPoints = pMesh->GetControlPoints();
 
@@ -17,7 +19,7 @@ mroon::MixedMesh LoadFBXMesh(FbxMesh* pMesh, float scale) {
 				mroon::Vector3(lControlPoints[i][0], lControlPoints[i][1],
 						lControlPoints[i][2]) * scale);
 
-		colours.push_back(mroon::Colour(1.0f, 0.5f, 0.9f));
+		colours.push_back(mroon::Colour(fmod(r+=0.1f, 1.0f), fmod(g+=0.8f, 1.0f), fmod(b+=0.17f, 1.0f)));
 //		Need this code for models where normals are assigned by control point
 		// TODO: store these in a temp lookup table, fill in the real normals list later
 //        for (int j = 0; j < pMesh->GetElementNormalCount(); j++)
