@@ -16,7 +16,6 @@ public:
 	Vector3() : GeneralVector<3>(){};
 	Vector3(float values[3]) : GeneralVector<3>(values){};
 	Vector3(float x, float y, float z);
-
 };
 
 #endif /* VECTOR3_H_ */

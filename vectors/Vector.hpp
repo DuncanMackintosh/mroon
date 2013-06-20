@@ -26,7 +26,11 @@ public:
 	struct _vector operator/(float divisor);
 	struct _vector operator*(float multiplier);
 	char* toString();
+
+	static struct _vector up;
 } Vector3;
+
+
 
 } /* namespace mroon */
 #endif /* VECTOR_H_ */

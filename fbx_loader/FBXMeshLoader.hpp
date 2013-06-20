@@ -4,5 +4,5 @@
 #include "fbxsdk.h"
 #include "../renderables/QuadMesh.hpp"
 
-mroon::MixedMesh LoadFBXMesh(FbxMesh* mesh);
+mroon::MixedMesh LoadFBXMesh(FbxMesh* mesh, float scale);
 #endif

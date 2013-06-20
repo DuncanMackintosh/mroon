@@ -20,12 +20,12 @@
 void DestroySdkObjects(FbxManager* pManager, bool pExitStatus);
 void InitializeSdkObjects(FbxManager*& pManager, FbxScene*& pScene);
 bool LoadScene(FbxManager* pManager, FbxDocument* pScene, const char* pFilename);
-bool loadFBXMeshes(char* file);
+bool loadFBXMeshes(char* file, float scale);
 // angle of rotation for the camera direction
 float angle = 0.0f;
 
 // actual vector representing the camera's direction
-float lx=0.0f,lz=-1.0f;
+float lx=-1.0f,lz=-1.0f;
 
 // XZ position of the camera
 float x=50.0f, z=50.0f;
@@ -58,7 +58,7 @@ void changeSize(int w, int h) {
         glViewport(0, 0, w, h);
 
         // Set the correct perspective.
-        gluPerspective(45.0f, ratio, 0.1f, 100.0f);
+        gluPerspective(45.0f, ratio, 0.1f, 10000.0f);
 
         // Get Back to the Modelview
         glMatrixMode(GL_MODELVIEW);
@@ -74,14 +74,16 @@ void computePos(float deltaMove) {
 
 float gridHeights[100][100];
 
-void init(void) {
+void init_sea_mesh(void) {
 	std::vector<mroon::Vector3> vertices = std::vector<mroon::Vector3>();
 	std::vector<mroon::Colour> colours = std::vector<mroon::Colour>();
+	std::vector<mroon::Vector3> normals = std::vector<mroon::Vector3>();
 	std::vector<int> quads = std::vector<int>();
 	for (size_t x = 0; x < 101; x++) {
 		for (size_t y = 0; y < 101; y++) {
 			float h = (float)rand()/RAND_MAX;
 			vertices.push_back(mroon::Vector3((float)x, h, float(y)));
+			normals.push_back(mroon::Vector3::up);
 			colours.push_back(mroon::Colour(0.9f, h, 0.9f));
 			if(x<100 && y<100) {
 				quads.push_back(x*101+y);
@@ -93,10 +95,30 @@ void init(void) {
 	}
 	mesh.setVertices(vertices);
 	mesh.setColours(colours);
+	mesh.setNormals(normals);
 	mesh.setQuads(quads);
 	printf("Made %zd quads\n", quads.size());
-	loadFBXMeshes("table2.fbx");
+}
 
+void init(void) {
+	init_sea_mesh();
+	loadFBXMeshes("table2.fbx", 1.0f);
+	loadFBXMeshes("../RamsesPyramid.fbx", 0.1f);
+}
+
+void update_sea_mesh(void) {
+	std::vector<mroon::Colour> colours = mesh.getColours();
+	std::vector<mroon::Vector3> vertices = mesh.getVertices();
+	for(size_t x_foof=0; x_foof<101; x_foof++) {
+		for(size_t y=0; y<101; y++) {
+			float h = vertices[x_foof*101+y].y;
+			h += (((float)rand()/RAND_MAX)-0.5f) * 0.1f;
+			vertices[x_foof*101+y].y = h;
+			colours[x_foof*101+y].g = h;
+		}
+	}
+	mesh.setVertices(vertices);
+	mesh.setColours(colours);
 }
 
 void renderScene(void) {
@@ -104,18 +126,6 @@ void renderScene(void) {
         if (deltaMove)
                 computePos(deltaMove);
 
-        std::vector<mroon::Colour> colours = mesh.getColours();
-        std::vector<mroon::Vector3> vertices = mesh.getVertices();
-        for(size_t x_foof=0; x_foof<101; x_foof++) {
-        	for(size_t y=0; y<101; y++) {
-        		float h = vertices[x_foof*101+y].y;
-        		h += (((float)rand()/RAND_MAX)-0.5f) * 0.1f;
-        		vertices[x_foof*101+y].y = h;
-        		colours[x_foof*101+y].g = h;
-        	}
-        }
-//        mesh.setVertices(vertices);
-//        mesh.setColours(colours);
 
         // Clear Color and Depth Buffers
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -127,6 +137,7 @@ void renderScene(void) {
                         x+lx, 5.0f,  z+lz,
 //        				2.243161f, 0.0f, 2.243161f,
                         0.0f, 1.0f,  0.0f);
+//        update_sea_mesh();
 //        mesh.render();
 
         for(size_t i=0; i<table.size(); i++) {
@@ -163,8 +174,8 @@ void processNormalKeys(unsigned char key, int xx, int yy) {
 void pressKey(int key, int xx, int yy) {
 
        switch (key) {
-             case GLUT_KEY_UP : deltaMove = 0.5f; break;
-             case GLUT_KEY_DOWN : deltaMove = -0.5f; break;
+             case GLUT_KEY_UP : deltaMove = 5.5f; break;
+             case GLUT_KEY_DOWN : deltaMove = -5.5f; break;
        }
 }
 
@@ -206,7 +217,7 @@ void mouseButton(int button, int state, int x, int y) {
         }
 }
 
-bool loadFBXMeshes(char* file) {
+bool loadFBXMeshes(char* file, float scale) {
     FbxManager* lSdkManager = NULL;
     FbxScene* lScene = NULL;
     bool lResult;
@@ -233,7 +244,7 @@ bool loadFBXMeshes(char* file) {
 						continue;
 					}
 					FbxMesh* fbxMesh = (FbxMesh *) lNode->GetChild(i)->GetNodeAttribute();
-					mroon::MixedMesh mesh = LoadFBXMesh(fbxMesh);
+					mroon::MixedMesh mesh = LoadFBXMesh(fbxMesh, scale);
 					table.push_back(mesh);
 					mesh.dbgBounds();
 				}

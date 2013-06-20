@@ -27,12 +27,16 @@ struct _vector _vector::operator+(struct _vector o){}
 struct _vector _vector::operator/(float divisor){
 	return _vector(this->x/divisor, this->y/divisor, this->z/divisor);
 }
-struct _vector _vector::operator*(float multiplier){}
+struct _vector _vector::operator*(float multiplier){
+	return _vector(this->x*multiplier, this->y*multiplier, this->z*multiplier);
+}
 
 char* _vector::toString() {
 	char* out = new char[255];
 	snprintf(out, 255, "[%f, %f, %f]", x, y, z);
 	return out;
 }
+
+Vector3 mroon::Vector3::up = Vector3(0.0f, 1.0f, 0.0f);
 
 } /* namespace mroon */
