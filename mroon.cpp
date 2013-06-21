@@ -234,13 +234,15 @@ bool loadFBXMeshes(char* file, float scale) {
 		if (lNode) {
 			for (int i = 0; i < lNode->GetChildCount(); i++) {
 				FbxNodeAttribute::EType lAttributeType;
+				printf("Looking at node %s of type %s\n", lNode->GetChild(i)->GetName(), lNode->GetChild(i)->GetTypeName());
 				if (lNode->GetChild(i)->GetNodeAttribute() == NULL) {
 					printf("NULL Node Attribute\n\n");
 				} else {
+
 					lAttributeType =
 							(lNode->GetChild(i)->GetNodeAttribute()->GetAttributeType());
-
 					if (lAttributeType != FbxNodeAttribute::eMesh) {
+						printf("Found a child of attribute type %d\n", lAttributeType);
 						continue;
 					}
 					FbxMesh* fbxMesh = (FbxMesh *) lNode->GetChild(i)->GetNodeAttribute();
