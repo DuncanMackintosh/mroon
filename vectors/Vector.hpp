@@ -8,26 +8,23 @@
 #ifndef VECTOR_H_
 #define VECTOR_H_
 
+#include <string>
+using namespace std;
+
 namespace mroon {
 
-//class Vector {
-//public:
-//	Vector();
-//	virtual ~Vector();
-//};
-
-typedef struct _vector {
+typedef struct _vector3 {
 	float x, y, z;
 public:
-	_vector(float x, float y, float z);
-	_vector();
-	struct _vector operator-(struct _vector o);
-	struct _vector operator+(struct _vector o);
-	struct _vector operator/(float divisor);
-	struct _vector operator*(float multiplier);
-	char* toString();
+	_vector3(float x, float y, float z);
+	_vector3();
+	struct _vector3 operator-(struct _vector3 o);
+	struct _vector3 operator+(struct _vector3 o);
+	struct _vector3 operator/(float divisor);
+	struct _vector3 operator*(float multiplier);
+	string toString();
 
-	static struct _vector up;
+	static struct _vector3 up;
 } Vector3;
 
 

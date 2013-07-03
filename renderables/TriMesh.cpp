@@ -11,7 +11,7 @@
 #include <vector>
 
 namespace mroon {
-
+int TriMesh::renders = 0;
 TriMesh::TriMesh() {
 
 }
@@ -27,6 +27,7 @@ void TriMesh::setTris(std::vector<int> tris) {
 }
 
 void TriMesh::render(void) {
+
 	glBegin(GL_TRIANGLES);
 		for(size_t i=0; i<this->tris.size(); i++) {
 			mroon::Vector3 v = vertices[tris[i]];
@@ -34,6 +35,7 @@ void TriMesh::render(void) {
 			glColor4f(c.r, c.g, c.b, c.a);
 			glNormal3f(0.0f, 1.0f, 0.0f);
 			glVertex3f(v.x, v.y, v.z);
+			TriMesh::renders++;
 		}
 	glEnd();
 }

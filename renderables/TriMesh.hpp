@@ -21,6 +21,9 @@ public:
 
 
 	void render(void);
+
+	static int renders;
+
 protected:
 	/**
 	 * List of indexes into the vertices array that make up the list of quads.

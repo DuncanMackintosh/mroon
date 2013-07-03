@@ -10,7 +10,10 @@
 
 #include "Renderable.hpp"
 #include <vector>
+#include <string>
 #include "../vectors/Vector.hpp"
+
+using namespace std;
 
 namespace mroon {
 // TODO: Move this
@@ -28,13 +31,15 @@ public:
 	void setVertices(std::vector<Vector3> vertices);
 	void setNormals(std::vector<Vector3> normals);
 	void setColours(std::vector<Colour> colours);
-	std::vector<Vector3> getVertices(void);
-	std::vector<Colour> getColours(void);
-	void dbgBounds(void);
+	vector<Vector3> getVertices(void);
+	vector<Colour> getColours(void);
+	Vector3 getCentre(void);
+	Vector3 getScale(void);
+	string toString(void);
 protected:
-	std::vector<mroon::Vector3> vertices;
-	std::vector<mroon::Vector3> normals;
-	std::vector<mroon::Colour> colours;
+	vector<Vector3> vertices;
+	vector<Vector3> normals;
+	vector<Colour> colours;
 
 };
 

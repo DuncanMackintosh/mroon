@@ -92,8 +92,5 @@ mroon::MixedMesh LoadFBXMesh(FbxMesh* pMesh, float scale) {
 	mesh.setColours(colours);
 	mesh.setNormals(normals);
 	mesh.setPolys(refs, sizes);
-	printf(
-			"Loaded a mesh containing %zd vertices (%zd normals) and %zd polys (%zd polypoints)\n",
-			points.size(), normals.size(), sizes.size(), refs.size());
 	return mesh;
 }

@@ -9,6 +9,7 @@
 #include <vector>
 #include <limits>
 #include <stdio.h>
+#include <iostream>
 
 namespace mroon {
 
@@ -41,7 +42,7 @@ void Mesh::setColours(std::vector<Colour> colours) {
 	this->colours = colours;
 }
 
-void Mesh::dbgBounds(void) {
+Vector3 Mesh::getScale(void) {
 	float maxF = std::numeric_limits<float>::max();
 	float minF = std::numeric_limits<float>::min();
 	Vector3 min(maxF, maxF, maxF), max(minF, minF, minF);
@@ -54,11 +55,23 @@ void Mesh::dbgBounds(void) {
 		if(vertices[i].y < min.y) min.y = vertices[i].y;
 		if(vertices[i].z < min.z) min.z = vertices[i].z;
 	}
+	return max-min;
+}
 
-	Vector3 centre = min + (max-min)/2;
-	Vector3 scale = max-min;
-	printf("Centre: %s\n", centre.toString());
-	printf("Scale: %s\n", scale.toString());
+Vector3 Mesh::getCentre(void) {
+	float maxF = std::numeric_limits<float>::max();
+	float minF = std::numeric_limits<float>::min();
+	Vector3 min(maxF, maxF, maxF), max(minF, minF, minF);
+	for(size_t i=0; i<vertices.size(); i++) {
+		if(vertices[i].x > max.x) max.x = vertices[i].x;
+		if(vertices[i].y > max.y) max.y = vertices[i].y;
+		if(vertices[i].z > max.z) max.z = vertices[i].z;
+
+		if(vertices[i].x < min.x) min.x = vertices[i].x;
+		if(vertices[i].y < min.y) min.y = vertices[i].y;
+		if(vertices[i].z < min.z) min.z = vertices[i].z;
+	}
+	return min + (max-min)/2;
 }
 
 } /* namespace mroon */

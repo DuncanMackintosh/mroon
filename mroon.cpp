@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <iostream>
+#include <ctime>
 
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -14,9 +15,9 @@
 #include "fbx_loader/FBXMeshLoader.hpp"
 #include "vectors/Vector.hpp"
 #include <vector>
-#include "vectors/Vector3.hpp"
 #include <iostream>
 #include <fbxsdk.h>
+using namespace mroon;
 void DestroySdkObjects(FbxManager* pManager, bool pExitStatus);
 void InitializeSdkObjects(FbxManager*& pManager, FbxScene*& pScene);
 bool LoadScene(FbxManager* pManager, FbxDocument* pScene, const char* pFilename);
@@ -102,8 +103,8 @@ void init_sea_mesh(void) {
 
 void init(void) {
 	init_sea_mesh();
-	loadFBXMeshes("table2.fbx", 1.0f);
-	loadFBXMeshes("../RamsesPyramid.fbx", 0.1f);
+	loadFBXMeshes((char*)"table2.fbx", 1.0f);
+	loadFBXMeshes((char*)"../RamsesPyramid.fbx", 0.1f);
 }
 
 void update_sea_mesh(void) {
@@ -120,6 +121,10 @@ void update_sea_mesh(void) {
 	mesh.setVertices(vertices);
 	mesh.setColours(colours);
 }
+
+bool debugged = false;
+
+
 
 void renderScene(void) {
 
@@ -140,8 +145,15 @@ void renderScene(void) {
 //        update_sea_mesh();
 //        mesh.render();
 
+        mroon::TriMesh::renders = mroon::QuadMesh::renders = mroon::MixedMesh::renders = 0;
+
+
         for(size_t i=0; i<table.size(); i++) {
         	table[i].render();
+        }
+        if(!debugged) {
+        	printf("Rendered %d triangles, %d quads and %d mixed polys\n", mroon::TriMesh::renders, mroon::QuadMesh::renders, mroon::MixedMesh::renders);
+        	debugged = true;
         }
 
         float h = 0.0f;
@@ -217,6 +229,40 @@ void mouseButton(int button, int state, int x, int y) {
         }
 }
 
+
+void addFBXMesh(FbxMesh *fbxMesh, float scale) {
+	if(table.size() > 100) {
+		cout << "Skipped" << endl;
+		return;
+	}
+	mroon::MixedMesh mesh = LoadFBXMesh(fbxMesh, scale);
+	table.push_back(mesh);
+	cout << mesh.toString() << endl;
+}
+
+void addAllFBXChildren(FbxNode *node, float scale) {
+	static int depth;
+	if (node) {
+		depth++;
+		for (int i = 0; i < node->GetChildCount(); i++) {
+			FbxNode *child = node->GetChild(i);
+			if(strstr(child->GetName(), "Sand")) continue;
+			if ( child->GetNodeAttribute() != NULL && child->GetNodeAttribute()->GetAttributeType() == FbxNodeAttribute::eMesh) {
+				for(int i=0; i<depth; i++) cout << " ";
+				cout << child->GetName() << ": ";
+				addFBXMesh((FbxMesh *)child->GetNodeAttribute(), scale);
+			} else {
+				for(int j=0; j<depth; j++) cout << " ";
+				cout << child->GetName() << endl;
+				addAllFBXChildren(child, scale);
+			}
+
+		}
+		depth--;
+	}
+}
+
+
 bool loadFBXMeshes(char* file, float scale) {
     FbxManager* lSdkManager = NULL;
     FbxScene* lScene = NULL;
@@ -229,32 +275,7 @@ bool loadFBXMeshes(char* file, float scale) {
     // The example can take a FBX file as an argument.
 	lResult = LoadScene(lSdkManager, lScene, file);
 	if (lResult) {
-		FbxNode* lNode = lScene->GetRootNode();
-
-		if (lNode) {
-			for (int i = 0; i < lNode->GetChildCount(); i++) {
-				FbxNodeAttribute::EType lAttributeType;
-				printf("Looking at node %s of type %s\n", lNode->GetChild(i)->GetName(), lNode->GetChild(i)->GetTypeName());
-				if (lNode->GetChild(i)->GetNodeAttribute() == NULL) {
-					printf("NULL Node Attribute\n\n");
-				} else {
-
-					lAttributeType =
-							(lNode->GetChild(i)->GetNodeAttribute()->GetAttributeType());
-					if (lAttributeType != FbxNodeAttribute::eMesh) {
-						printf("Found a child of attribute type %d\n", lAttributeType);
-						continue;
-					}
-					FbxMesh* fbxMesh = (FbxMesh *) lNode->GetChild(i)->GetNodeAttribute();
-					mroon::MixedMesh mesh = LoadFBXMesh(fbxMesh, scale);
-					table.push_back(mesh);
-					mesh.dbgBounds();
-				}
-
-			}
-		} else {
-			printf("No root node in scene\n");
-		}
+		addAllFBXChildren(lScene->GetRootNode(), scale);
 	} else {
 		printf("Failed to load scene\n");
 	}
@@ -263,12 +284,6 @@ bool loadFBXMeshes(char* file, float scale) {
 }
 
 int main(int argc, char **argv) {
-	Vector3 v;
-	v = Vector3(1.0f, 2.0f, 3.0f);
-	std::cout << v.stringRep();
-	std::cout <<"\n";
-	std::cout << v.length();
-	std::cout <<"\n";
 
   init();
         // init GLUT and create window
