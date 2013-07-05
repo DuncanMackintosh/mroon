@@ -21,18 +21,30 @@ namespace mroon {
 class Mesh: public mroon::Renderable {
 public:
 	virtual ~Mesh();
-	void setVertices(std::vector<Vector3> vertices);
-	void setNormals(std::vector<Vector3> normals);
-	void setColours(std::vector<Colour> colours);
-	vector<Vector3> getVertices(void);
-	vector<Colour> getColours(void);
+	void setPoints(Vector3 points[], int pointCount);
+	void setPoints(vector<Vector3> points);
+	void setNormals(Vector3 normals[]);
+	void setNormals(vector<Vector3> normals);
+	void setColours(Colour colours[]);
+	void setColours(vector<Colour> colours);
+	Vector3 *getPoints(void);
+	Colour *getColours(void);
 	Vector3 getCentre(void);
 	Vector3 getScale(void);
+	int getPointCount(void);
+	int getVertexCount(void);
 	string toString(void);
 protected:
-	vector<Vector3> vertices;
-	vector<Vector3> normals;
-	vector<Colour> colours;
+	/** Control points that make up the mesh, as Vector3s in world space. The
+	 * polygons of the mesh are made up by indexing into this array for each
+	 * mesh vertex (so a given control point can be a vertex for more than one
+	 * polygon). */
+	Vector3 *points;
+	/** Normal vectors for each vertex of the mesh */
+	Vector3 *normals;
+	Colour *colours;
+	size_t pointCount;
+	size_t vertexCount;
 
 };
 

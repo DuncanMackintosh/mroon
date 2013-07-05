@@ -10,6 +10,7 @@
 #include <limits>
 #include <stdio.h>
 #include <iostream>
+#include <memory>
 
 namespace mroon {
 
@@ -17,28 +18,43 @@ Mesh::~Mesh() {
 
 }
 
-void Mesh::setVertices(std::vector<Vector3> vertices) {
-	this->vertices = vertices;
-	Colour defColour = Colour(1.0f, 1.0f, 1.0f, 1.0f);
-	this->colours = std::vector<Colour>(vertices.size(), defColour);
+void Mesh::setPoints(vector<Vector3> points) {
+	Vector3 *cpy = new Vector3[points.size()];
+	std::copy(points.begin(), points.end(), cpy);
+	this->setPoints(cpy, points.size());
 }
 
-void Mesh::setNormals(std::vector<Vector3> normals) {
+void Mesh::setPoints(Vector3 points[], int pointCount) {
+	this->points = points;
+	this->pointCount = pointCount;
+}
+
+void Mesh::setNormals(vector<Vector3> normals) {
+	Vector3 *cpy = new Vector3[normals.size()];
+	std::copy(normals.begin(), normals.end(), cpy);
+	this->setNormals(cpy);
+}
+
+void Mesh::setNormals(Vector3 normals[]) {
 	this->normals = normals;
 }
 
-std::vector<Vector3> Mesh::getVertices(void) {
-	return this->vertices;
+Vector3 *Mesh::getPoints(void) {
+	return this->points;
 }
 
-std::vector<Colour> Mesh::getColours(void) {
+Colour *Mesh::getColours(void) {
 	return this->colours;
 }
-void Mesh::setColours(std::vector<Colour> colours) {
-	if (colours.size() != vertices.size()) {
-		// TODO: Crash
-		return;
-	}
+
+void Mesh::setColours(vector<Colour> colours) {
+	Colour *cpy = new Colour[colours.size()];
+	std::copy(colours.begin(), colours.end(), cpy);
+	this->setColours(cpy);
+}
+
+
+void Mesh::setColours(Colour colours[]) {
 	this->colours = colours;
 }
 
@@ -46,14 +62,14 @@ Vector3 Mesh::getScale(void) {
 	float maxF = std::numeric_limits<float>::max();
 	float minF = std::numeric_limits<float>::min();
 	Vector3 min(maxF, maxF, maxF), max(minF, minF, minF);
-	for(size_t i=0; i<vertices.size(); i++) {
-		if(vertices[i].x > max.x) max.x = vertices[i].x;
-		if(vertices[i].y > max.y) max.y = vertices[i].y;
-		if(vertices[i].z > max.z) max.z = vertices[i].z;
+	for(size_t i=0; i<pointCount; i++) {
+		if(points[i].x > max.x) max.x = points[i].x;
+		if(points[i].y > max.y) max.y = points[i].y;
+		if(points[i].z > max.z) max.z = points[i].z;
 
-		if(vertices[i].x < min.x) min.x = vertices[i].x;
-		if(vertices[i].y < min.y) min.y = vertices[i].y;
-		if(vertices[i].z < min.z) min.z = vertices[i].z;
+		if(points[i].x < min.x) min.x = points[i].x;
+		if(points[i].y < min.y) min.y = points[i].y;
+		if(points[i].z < min.z) min.z = points[i].z;
 	}
 	return max-min;
 }
@@ -62,14 +78,14 @@ Vector3 Mesh::getCentre(void) {
 	float maxF = std::numeric_limits<float>::max();
 	float minF = std::numeric_limits<float>::min();
 	Vector3 min(maxF, maxF, maxF), max(minF, minF, minF);
-	for(size_t i=0; i<vertices.size(); i++) {
-		if(vertices[i].x > max.x) max.x = vertices[i].x;
-		if(vertices[i].y > max.y) max.y = vertices[i].y;
-		if(vertices[i].z > max.z) max.z = vertices[i].z;
+	for(size_t i=0; i<pointCount; i++) {
+		if(points[i].x > max.x) max.x = points[i].x;
+		if(points[i].y > max.y) max.y = points[i].y;
+		if(points[i].z > max.z) max.z = points[i].z;
 
-		if(vertices[i].x < min.x) min.x = vertices[i].x;
-		if(vertices[i].y < min.y) min.y = vertices[i].y;
-		if(vertices[i].z < min.z) min.z = vertices[i].z;
+		if(points[i].x < min.x) min.x = points[i].x;
+		if(points[i].y < min.y) min.y = points[i].y;
+		if(points[i].z < min.z) min.z = points[i].z;
 	}
 	return min + (max-min)/2;
 }

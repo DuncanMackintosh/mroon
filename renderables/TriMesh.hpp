@@ -17,7 +17,7 @@ public:
 	TriMesh();
 	virtual ~TriMesh();
 
-	void setTris(std::vector<int> quads);
+	void setTris(int tris[], int triCount);
 
 
 	void render(void);
@@ -26,10 +26,10 @@ public:
 
 protected:
 	/**
-	 * List of indexes into the vertices array that make up the list of quads.
-	 * Must 4*n entries, where n is the number of quads defined.
+	 * List of indexes into the vertices array that make up the list of tris.
+	 * Must be triCount * 3 entries
 	 **/
-	std::vector<int> tris;
+	int *tris;
 };
 
 } /* namespace mroon */

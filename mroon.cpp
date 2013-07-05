@@ -77,52 +77,12 @@ void computePos(float deltaMove) {
 
 float gridHeights[100][100];
 
-void init_sea_mesh(void) {
-	std::vector<mroon::Vector3> vertices = std::vector<mroon::Vector3>();
-	std::vector<mroon::Colour> colours = std::vector<mroon::Colour>();
-	std::vector<mroon::Vector3> normals = std::vector<mroon::Vector3>();
-	std::vector<int> quads = std::vector<int>();
-	for (size_t x = 0; x < 101; x++) {
-		for (size_t y = 0; y < 101; y++) {
-			float h = (float)rand()/RAND_MAX;
-			vertices.push_back(mroon::Vector3((float)x, h, float(y)));
-			normals.push_back(mroon::Vector3::up);
-			colours.push_back(mroon::Colour(0.9f, h, 0.9f));
-			if(x<100 && y<100) {
-				quads.push_back(x*101+y);
-				quads.push_back((x+1)*101+y);
-				quads.push_back((x+1)*101+y+1);
-				quads.push_back(x*101+y+1);
-			}
-		}
-	}
-	mesh.setVertices(vertices);
-	mesh.setColours(colours);
-	mesh.setNormals(normals);
-	mesh.setQuads(quads);
-	printf("Made %zd quads\n", quads.size());
-}
 
 void init(void) {
-	init_sea_mesh();
 	loadFBXMeshes((char*)"table2.fbx", 1.0f);
 	loadFBXMeshes((char*)"../RamsesPyramid.fbx", 0.1f);
 }
 
-void update_sea_mesh(void) {
-	std::vector<mroon::Colour> colours = mesh.getColours();
-	std::vector<mroon::Vector3> vertices = mesh.getVertices();
-	for(size_t x_foof=0; x_foof<101; x_foof++) {
-		for(size_t y=0; y<101; y++) {
-			float h = vertices[x_foof*101+y].y;
-			h += (((float)rand()/RAND_MAX)-0.5f) * 0.1f;
-			vertices[x_foof*101+y].y = h;
-			colours[x_foof*101+y].g = h;
-		}
-	}
-	mesh.setVertices(vertices);
-	mesh.setColours(colours);
-}
 
 bool debugged = false;
 

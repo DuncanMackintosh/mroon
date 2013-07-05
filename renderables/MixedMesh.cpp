@@ -14,9 +14,24 @@ int MixedMesh::triRenders = 0;
 int MixedMesh::quadRenders = 0;
 int MixedMesh::modeSwitches = 0;
 
-void MixedMesh::setPolys(std::vector<int> refs, std::vector<int> polysizes) {
+void MixedMesh::setPolys(vector<int> refs, vector<int> sizes) {
+	int *ref_c = new int[refs.size()];
+	int *size_c = new int[sizes.size()];
+	std::copy(refs.begin(), refs.end(), ref_c);
+	std::copy(sizes.begin(), sizes.end(), size_c);
+	this->refs = ref_c;
+	this->polysizes = size_c;
+	this->polyCount = sizes.size();
+	this->vertexCount = refs.size();
+}
+
+void MixedMesh::setPolys(int refs[], int polysizes[], int polyCount) {
 	this->refs = refs;
 	this->polysizes = polysizes;
+	this->polyCount = polyCount;
+	for(int i=0; i<polyCount; i++) {
+		this->vertexCount += polysizes[i];
+	}
 }
 
 void MixedMesh::render(void) {
@@ -28,7 +43,7 @@ void MixedMesh::render(void) {
 	// Check to make sure we don't glEnd() on the first iteration,
 	// and don't glEnd() at the end either if we had 0 iterations
 	bool ended = true;
-	for(size_t i=0; i<this->polysizes.size(); i++) {
+	for(size_t i=0; i<this->polyCount; i++) {
 		if(this->polysizes[i] == 3) {
 #ifdef MINIMISE_SWAPS
 			if(lastSize != 3) {
@@ -63,7 +78,7 @@ void MixedMesh::render(void) {
 		for(int j=0; j<this->polysizes[i]; j++) {
 			int ref = this->refs[r];
 			// Apparently this is faster than inlining the references?
-			mroon::Vector3 *v = &(vertices[ref]);
+			mroon::Vector3 *v = &(points[ref]);
 			mroon::Vector3 *n = &(normals[r]);
 			mroon::Colour *c = &(colours[r]);
 			glColor4f(c->r, c->g, c->b, c->a);
@@ -90,10 +105,9 @@ void MixedMesh::render(void) {
 string MixedMesh::toString(void) {
 	stringstream ss;
 	ss << setprecision(1)
-			<< vertices.size() << " vertices\t"
-			<< normals.size() << " normals\t"
-			<< polysizes.size() << " polys\t"
-			<< refs.size() << " polypoints\t"
+			<< pointCount << " control points\t"
+			<< polyCount << " polys\t"
+			<< vertexCount << " vertexes\t"
 			<< "Centre: " << getCentre().toString()
 			<< "\tScale: " << getScale().toString()
 			;

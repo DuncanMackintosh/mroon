@@ -22,24 +22,23 @@ QuadMesh::~QuadMesh() {
 
 }
 
-void QuadMesh::setQuads(std::vector<int> quads) {
-	// TODO: Exception
-	if(quads.size() % 4 != 0) return;
+void QuadMesh::setQuads(int quads[], int quadCount) {
 	this->quads = quads;
+	this->vertexCount = quadCount * 4;
 }
 
 void QuadMesh::render(void) {
 
 	glBegin(GL_QUADS);
-		for(size_t i=0; i<this->quads.size(); i++) {
-			mroon::Vector3 *v = &(vertices[quads[i]]);
+		for(size_t i=0; i<vertexCount; i++) {
+			mroon::Vector3 *v = &(points[quads[i]]);
 			mroon::Colour *c = &(colours[quads[i]]);
 			mroon::Vector3 *n = &(normals[quads[i]]);
 			glColor4f(c->r, c->g, c->b, c->a);
 			glNormal3f(n->x, n->y, n->z);
 			glVertex3f(v->x, v->y, v->z);
-			QuadMesh::renders++;
 		}
+		QuadMesh::renders += vertexCount/4;
 	glEnd();
 }
 

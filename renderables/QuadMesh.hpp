@@ -21,7 +21,7 @@ public:
 	QuadMesh();
 	virtual ~QuadMesh();
 
-	void setQuads(std::vector<int> quads);
+	void setQuads(int quads[], int quadCount);
 
 
 	void render(void);
@@ -30,9 +30,10 @@ public:
 protected:
 	/**
 	 * List of indexes into the vertices array that make up the list of quads.
-	 * Must 4*n entries, where n is the number of quads defined.
+	 * Must be quadCount * 4 entries
 	 **/
-	std::vector<int> quads;
+	// FIXME: Move this up to Mesh::vertexRefs because it's actually common
+	int *quads;
 };
 
 

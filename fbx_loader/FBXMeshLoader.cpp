@@ -106,7 +106,7 @@ MixedMesh LoadFBXMesh(FbxMesh* pMesh, float scale) {
 	}
 
 	MixedMesh mesh;
-	mesh.setVertices(points);
+	mesh.setPoints(points);
 	// Sort out our vertices in order
 	for(int i=0; i<POLY_SIZE_COUNT; i++) {
 		colours[0].insert(colours[0].end(), colours[i].begin(), colours[i].end());

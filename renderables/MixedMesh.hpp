@@ -21,7 +21,9 @@ public:
 	MixedMesh();
 	virtual ~MixedMesh();
 
-	void setPolys(std::vector<int> refs, std::vector<int> polysizes);
+	void setPolys(int refs[], int polysizes[], int polyCount);
+
+	void setPolys(vector<int> refs, vector<int> sizes);
 
 	static int renders, triRenders, quadRenders, modeSwitches;
 
@@ -32,12 +34,15 @@ public:
 protected:
 	/**
 	 * List of indexes into the vertices array that make up the points of each poly
+	 * There are vertexCount of these
 	 **/
-	std::vector<int> refs;
+	int *refs;
 	/**
-	 * List of size of each poly
+	 * List of size of each poly. There are polyCount of these
 	 */
-	std::vector<int> polysizes;
+	int *polysizes;
+	/** Number of polygons defined. */
+	size_t polyCount;
 };
 
 } /* namespace mroon */
