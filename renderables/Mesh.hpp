@@ -12,18 +12,11 @@
 #include <vector>
 #include <string>
 #include "../vectors/Vector.hpp"
+#include "Colour.hpp"
 
 using namespace std;
 
 namespace mroon {
-// TODO: Move this
-struct Colour {
-	float r, g, b, a;
-public:
-	Colour(float r, float g, float b, float a);
-Colour(float r, float g, float b);
-	Colour();
-};
 
 class Mesh: public mroon::Renderable {
 public:

@@ -23,7 +23,7 @@ public:
 
 	void setPolys(std::vector<int> refs, std::vector<int> polysizes);
 
-	static int renders;
+	static int renders, triRenders, quadRenders, modeSwitches;
 
 	void render(void);
 

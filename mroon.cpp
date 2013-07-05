@@ -1,7 +1,9 @@
+#define FBXSDK_NEW_API
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 #include <iostream>
+#include <iomanip>
 #include <ctime>
 
 #ifdef __APPLE__
@@ -125,8 +127,20 @@ void update_sea_mesh(void) {
 bool debugged = false;
 
 
+double base_time;
+double frames;
+double fps;
 
 void renderScene(void) {
+	frames++;
+	double timeMillis = glutGet(GLUT_ELAPSED_TIME);
+	if ((timeMillis - base_time) > 1000.0) {
+		fps = frames * 1000.0 / (timeMillis - base_time);
+		base_time = timeMillis;
+		frames = 0;
+		cout << "FPS: " << fps << endl;
+	}
+
 
         if (deltaMove)
                 computePos(deltaMove);
@@ -145,14 +159,14 @@ void renderScene(void) {
 //        update_sea_mesh();
 //        mesh.render();
 
-        mroon::TriMesh::renders = mroon::QuadMesh::renders = mroon::MixedMesh::renders = 0;
+        TriMesh::renders = QuadMesh::renders = MixedMesh::renders = MixedMesh::quadRenders = MixedMesh::triRenders = MixedMesh::modeSwitches = 0;
 
 
         for(size_t i=0; i<table.size(); i++) {
         	table[i].render();
         }
         if(!debugged) {
-        	printf("Rendered %d triangles, %d quads and %d mixed polys\n", mroon::TriMesh::renders, mroon::QuadMesh::renders, mroon::MixedMesh::renders);
+        	printf("Rendered %d triangles, %d quads and %d (%d tri/%d quad) mixed polys (%d swaps) \n", TriMesh::renders, QuadMesh::renders, MixedMesh::renders, MixedMesh::triRenders, MixedMesh::quadRenders, MixedMesh::modeSwitches);
         	debugged = true;
         }
 
@@ -231,10 +245,10 @@ void mouseButton(int button, int state, int x, int y) {
 
 
 void addFBXMesh(FbxMesh *fbxMesh, float scale) {
-	if(table.size() > 100) {
-		cout << "Skipped" << endl;
-		return;
-	}
+//	if(table.size() > 100) {
+//		cout << "Skipped" << endl;
+//		return;
+//	}
 	mroon::MixedMesh mesh = LoadFBXMesh(fbxMesh, scale);
 	table.push_back(mesh);
 	cout << mesh.toString() << endl;
@@ -276,6 +290,8 @@ bool loadFBXMeshes(char* file, float scale) {
 	lResult = LoadScene(lSdkManager, lScene, file);
 	if (lResult) {
 		addAllFBXChildren(lScene->GetRootNode(), scale);
+		// LegoDice is the last node in the root
+//		addFBXMesh((FbxMesh *)lScene->GetRootNode()->GetChild(lScene->GetRootNode()->GetChildCount(false)-1)->GetNodeAttribute(), scale);
 	} else {
 		printf("Failed to load scene\n");
 	}
