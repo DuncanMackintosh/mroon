@@ -1,8 +1,18 @@
-*.o
-*.exe
-Debug/mroon
-*.d
+# CDT Artefacts
 Debug/
-/Debug-Linux
-/fbx_examples
+Debug-Linux/
 Release/
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
