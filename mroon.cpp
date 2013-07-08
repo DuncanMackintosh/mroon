@@ -14,6 +14,7 @@
 
 #include "renderables/QuadMesh.hpp"
 #include "renderables/TriMesh.hpp"
+#include "scene/Scene.hpp"
 #include "fbx_loader/FBXMeshLoader.hpp"
 #include "vectors/Vector.hpp"
 #include <vector>
@@ -41,6 +42,8 @@ int xOrigin = -1;
 
 mroon::QuadMesh mesh;
 std::vector<mroon::MixedMesh> table;
+
+Scene scene;
 
 void changeSize(int w, int h) {
 
@@ -81,11 +84,13 @@ float gridHeights[100][100];
 void init(void) {
 	loadFBXMeshes((char*)"table2.fbx", 1.0f);
 	loadFBXMeshes((char*)"../RamsesPyramid.fbx", 0.1f);
+	for(int i=0; i<table.size(); i++) {
+		scene.registerMesh(&(table[i]));
+	}
 }
 
 
 bool debugged = false;
-
 
 double base_time;
 double frames;
@@ -122,9 +127,10 @@ void renderScene(void) {
         TriMesh::renders = QuadMesh::renders = MixedMesh::renders = MixedMesh::quadRenders = MixedMesh::triRenders = MixedMesh::modeSwitches = 0;
 
 
-        for(size_t i=0; i<table.size(); i++) {
-        	table[i].render();
-        }
+//        for(size_t i=0; i<table.size(); i++) {
+//        	table[i].render();
+//        }
+        scene.render();
         if(!debugged) {
         	printf("Rendered %d triangles, %d quads and %d (%d tri/%d quad) mixed polys (%d swaps) \n", TriMesh::renders, QuadMesh::renders, MixedMesh::renders, MixedMesh::triRenders, MixedMesh::quadRenders, MixedMesh::modeSwitches);
         	debugged = true;

@@ -16,7 +16,7 @@ using namespace std;
 
 namespace mroon {
 
-class MixedMesh: public mroon::Mesh {
+class MixedMesh: public mroon::Mesh{
 public:
 	MixedMesh();
 	virtual ~MixedMesh();
@@ -31,10 +31,13 @@ public:
 
 	string toString(void);
 
-protected:
+	friend class Scene;
+
 	/**
 	 * List of indexes into the vertices array that make up the points of each poly
-	 * There are vertexCount of these
+	 * There are vertexCount of these. They are in the same order as polysizes,
+	 * but for each entry in polysizes[] there'll be 3 or 4 entries in this
+	 * array.
 	 **/
 	int *refs;
 	/**
