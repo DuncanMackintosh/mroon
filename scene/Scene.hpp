@@ -14,6 +14,13 @@
 
 namespace mroon {
 
+typedef struct {
+	Vector3 location;
+	Vector3 normal;
+	Colour colour;
+} Vertex;
+
+
 class Scene {
 
 public:
@@ -25,9 +32,9 @@ public:
 
 private:
 	int triCount;
-	Tri *tris;
+	Vertex *tris;
 	int quadCount;
-	Quad *quads;
+	Vertex *quads;
 };
 
 } /* namespace mroon */

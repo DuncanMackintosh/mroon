@@ -19,22 +19,23 @@ Scene::~Scene() {
 	// TODO Auto-generated destructor stub
 }
 
+
 void Scene::registerMesh(MixedMesh *mesh) {
 	int triC=0, quadC=0;
 	for(size_t i=0; i<mesh->polyCount; i++) {
 		if(mesh->polysizes[i] == 3) {
-			triC++;
+			triC+=3;
 		} else {
-			quadC++;
+			quadC+=4;
 		}
 	}
 	// Make enough room for both
-	Tri *newT = new Tri[this->triCount + triC];
+	Vertex *newT = new Vertex[this->triCount + triC];
 	std::copy(this->tris, this->tris + this->triCount, newT);
 	delete [] this->tris;
 	this->tris = newT;
 
-	Quad *newQ = new Quad[this->quadCount + quadC];
+	Vertex *newQ = new Vertex[this->quadCount + quadC];
 	std::copy(this->quads, this->quads + this->quadCount, newQ);
 	delete [] this->quads;
 	this->quads = newQ;
@@ -47,21 +48,21 @@ void Scene::registerMesh(MixedMesh *mesh) {
 
 	for(size_t i=0; i<mesh->polyCount; i++) {
 		if(mesh->polysizes[i] == 3) {
-			Tri *T = &(this->tris[t++]);
 			for(int j = 0; j < 3; j++) {
+				Vertex *T = &(this->tris[t++]);
 				int ref = mesh->refs[r];
-				T->vertices[j] = mesh->points[ref];
-				T->normals[j] = mesh->normals[ref];
-				T->colours[j] = mesh->colours[ref];
+				T->location = mesh->points[ref];
+				T->normal = mesh->normals[ref];
+				T->colour = mesh->colours[ref];
 				r++;
 			}
 		} else {
-			Quad *Q = &(this->quads[q++]);
 			for(int j = 0; j < 4; j++) {
+				Vertex *T = &(this->quads[q++]);
 				int ref = mesh->refs[r];
-				Q->vertices[j] = mesh->points[ref];
-				Q->normals[j] = mesh->normals[ref];
-				Q->colours[j] = mesh->colours[ref];
+				T->location = mesh->points[ref];
+				T->normal = mesh->normals[ref];
+				T->colour = mesh->colours[ref];
 				r++;
 			}
 		}
@@ -72,28 +73,18 @@ void Scene::registerMesh(MixedMesh *mesh) {
 void Scene::render(void) {
 	glBegin(GL_TRIANGLES);
 	for(int i = 0; i < this->triCount; i++) {
-		Tri *t = &(this->tris[i]);
-		for(int j=0; j < 3; j++) {
-			Vector3 *v = &(t->vertices[j]);
-			glVertex3f(v->x, v->y, v->z);
-			v = &(t->normals[j]);
-			glNormal3f(v->x, v->y, v->z);
-			Colour *c = &(t->colours[j]);
-			glColor3f(c->r, c->g, c->b);
-		}
+		Vertex *v = &(this->tris[i]);
+		glVertex3f(v->location.x, v->location.y, v->location.z);
+		glNormal3f(v->normal.x, v->normal.y, v->normal.z);
+		glColor3f(v->colour.r, v->colour.g, v->colour.b);
 	}
 	glEnd();
 	glBegin(GL_QUADS);
 	for(int i = 0; i < this->quadCount; i++) {
-		Quad *q = &(this->quads[i]);
-		for(int j=0; j < 4; j++) {
-			Vector3 *v = &(q->vertices[j]);
-			glVertex3f(v->x, v->y, v->z);
-			v = &(q->normals[j]);
-			glNormal3f(v->x, v->y, v->z);
-			Colour *c = &(q->colours[j]);
-			glColor3f(c->r, c->g, c->b);
-		}
+		Vertex *v = &(this->quads[i]);
+		glVertex3f(v->location.x, v->location.y, v->location.z);
+		glNormal3f(v->normal.x, v->normal.y, v->normal.z);
+		glColor3f(v->colour.r, v->colour.g, v->colour.b);
 	}
 	glEnd();
 }
