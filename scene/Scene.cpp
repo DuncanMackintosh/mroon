@@ -19,26 +19,28 @@ Scene::~Scene() {
 	// TODO Auto-generated destructor stub
 }
 
+// 3 for location, 3 for normal, 3 for colour (for now)
+#define FLOAT_COUNT 9
 
 void Scene::registerMesh(MixedMesh *mesh) {
 	int triC=0, quadC=0;
 	for(size_t i=0; i<mesh->polyCount; i++) {
 		if(mesh->polysizes[i] == 3) {
-			triC+=3;
+			triC+=(3*FLOAT_COUNT);
 		} else {
-			quadC+=4;
+			quadC+=(4*FLOAT_COUNT);
 		}
 	}
 	// Make enough room for both
-	Vertex *newT = new Vertex[this->triCount + triC];
-	std::copy(this->tris, this->tris + this->triCount, newT);
-	delete [] this->tris;
-	this->tris = newT;
+	float *newT = new float[this->triCount + triC];
+	std::copy(this->triData, this->triData + this->triCount, newT);
+	delete [] this->triData;
+	this->triData = newT;
 
-	Vertex *newQ = new Vertex[this->quadCount + quadC];
-	std::copy(this->quads, this->quads + this->quadCount, newQ);
-	delete [] this->quads;
-	this->quads = newQ;
+	float *newQ = new float[this->quadCount + quadC];
+	std::copy(this->quadData, this->quadData + this->quadCount, newQ);
+	delete [] this->quadData;
+	this->quadData = newQ;
 
 	int t = this->triCount, q = this->quadCount;
 	this->triCount += triC;
@@ -49,20 +51,30 @@ void Scene::registerMesh(MixedMesh *mesh) {
 	for(size_t i=0; i<mesh->polyCount; i++) {
 		if(mesh->polysizes[i] == 3) {
 			for(int j = 0; j < 3; j++) {
-				Vertex *T = &(this->tris[t++]);
 				int ref = mesh->refs[r];
-				T->location = mesh->points[ref];
-				T->normal = mesh->normals[ref];
-				T->colour = mesh->colours[ref];
+				this->triData[t++] = mesh->points[ref].x;
+				this->triData[t++] = mesh->points[ref].y;
+				this->triData[t++] = mesh->points[ref].z;
+				this->triData[t++] = mesh->normals[ref].x;
+				this->triData[t++] = mesh->normals[ref].y;
+				this->triData[t++] = mesh->normals[ref].z;
+				this->triData[t++] = mesh->colours[ref].r;
+				this->triData[t++] = mesh->colours[ref].g;
+				this->triData[t++] = mesh->colours[ref].b;
 				r++;
 			}
 		} else {
 			for(int j = 0; j < 4; j++) {
-				Vertex *T = &(this->quads[q++]);
 				int ref = mesh->refs[r];
-				T->location = mesh->points[ref];
-				T->normal = mesh->normals[ref];
-				T->colour = mesh->colours[ref];
+				this->quadData[q++] = mesh->points[ref].x;
+				this->quadData[q++] = mesh->points[ref].y;
+				this->quadData[q++] = mesh->points[ref].z;
+				this->quadData[q++] = mesh->normals[ref].x;
+				this->quadData[q++] = mesh->normals[ref].y;
+				this->quadData[q++] = mesh->normals[ref].z;
+				this->quadData[q++] = mesh->colours[ref].r;
+				this->quadData[q++] = mesh->colours[ref].g;
+				this->quadData[q++] = mesh->colours[ref].b;
 				r++;
 			}
 		}
@@ -72,19 +84,23 @@ void Scene::registerMesh(MixedMesh *mesh) {
 
 void Scene::render(void) {
 	glBegin(GL_TRIANGLES);
-	for(int i = 0; i < this->triCount; i++) {
-		Vertex *v = &(this->tris[i]);
-		glVertex3f(v->location.x, v->location.y, v->location.z);
-		glNormal3f(v->normal.x, v->normal.y, v->normal.z);
-		glColor3f(v->colour.r, v->colour.g, v->colour.b);
+	for(int i = 0; i < this->triCount;) {
+		glVertex3fv(&this->triData[i]);
+		i += 3;
+		glNormal3fv(&this->triData[i]);
+		i += 3;
+		glColor3fv(&this->triData[i]);
+		i += 3;
 	}
 	glEnd();
 	glBegin(GL_QUADS);
-	for(int i = 0; i < this->quadCount; i++) {
-		Vertex *v = &(this->quads[i]);
-		glVertex3f(v->location.x, v->location.y, v->location.z);
-		glNormal3f(v->normal.x, v->normal.y, v->normal.z);
-		glColor3f(v->colour.r, v->colour.g, v->colour.b);
+	for(int i = 0; i < this->quadCount;) {
+		glVertex3fv(&this->quadData[i]);
+		i += 3;
+		glNormal3fv(&this->quadData[i]);
+		i += 3;
+		glColor3fv(&this->quadData[i]);
+		i += 3;
 	}
 	glEnd();
 }

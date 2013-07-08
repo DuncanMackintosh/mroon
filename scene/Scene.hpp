@@ -32,9 +32,9 @@ public:
 
 private:
 	int triCount;
-	Vertex *tris;
+	float *triData;
 	int quadCount;
-	Vertex *quads;
+	float *quadData;
 };
 
 } /* namespace mroon */
