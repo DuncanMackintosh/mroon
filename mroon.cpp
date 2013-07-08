@@ -42,6 +42,7 @@ int xOrigin = -1;
 mroon::QuadMesh mesh;
 std::vector<mroon::MixedMesh> table;
 
+
 void changeSize(int w, int h) {
 
         // Prevent a divide by zero, when window is too short
@@ -77,68 +78,36 @@ void computePos(float deltaMove) {
 
 float gridHeights[100][100];
 
-void init_sea_mesh(void) {
-	std::vector<mroon::Vector3> vertices = std::vector<mroon::Vector3>();
-	std::vector<mroon::Colour> colours = std::vector<mroon::Colour>();
-	std::vector<mroon::Vector3> normals = std::vector<mroon::Vector3>();
-	std::vector<int> quads = std::vector<int>();
-	for (size_t x = 0; x < 101; x++) {
-		for (size_t y = 0; y < 101; y++) {
-			float h = (float)rand()/RAND_MAX;
-			vertices.push_back(mroon::Vector3((float)x, h, float(y)));
-			normals.push_back(mroon::Vector3::up);
-			colours.push_back(mroon::Colour(0.9f, h, 0.9f));
-			if(x<100 && y<100) {
-				quads.push_back(x*101+y);
-				quads.push_back((x+1)*101+y);
-				quads.push_back((x+1)*101+y+1);
-				quads.push_back(x*101+y+1);
-			}
-		}
-	}
-	mesh.setVertices(vertices);
-	mesh.setColours(colours);
-	mesh.setNormals(normals);
-	mesh.setQuads(quads);
-	printf("Made %zd quads\n", quads.size());
-}
 
 void init(void) {
-	init_sea_mesh();
 	loadFBXMeshes((char*)"table2.fbx", 1.0f);
 	loadFBXMeshes((char*)"../RamsesPyramid.fbx", 0.1f);
 }
 
-void update_sea_mesh(void) {
-	std::vector<mroon::Colour> colours = mesh.getColours();
-	std::vector<mroon::Vector3> vertices = mesh.getVertices();
-	for(size_t x_foof=0; x_foof<101; x_foof++) {
-		for(size_t y=0; y<101; y++) {
-			float h = vertices[x_foof*101+y].y;
-			h += (((float)rand()/RAND_MAX)-0.5f) * 0.1f;
-			vertices[x_foof*101+y].y = h;
-			colours[x_foof*101+y].g = h;
-		}
-	}
-	mesh.setVertices(vertices);
-	mesh.setColours(colours);
-}
 
 bool debugged = false;
-
 
 double base_time;
 double frames;
 double fps;
+double running_fps = 0.0;
+double tot_time = 0.0;
+int repeats = 0;
 
 void renderScene(void) {
 	frames++;
 	double timeMillis = glutGet(GLUT_ELAPSED_TIME);
 	if ((timeMillis - base_time) > 1000.0) {
 		fps = frames * 1000.0 / (timeMillis - base_time);
+		tot_time+=(timeMillis - base_time);
+		running_fps+=fps;
+		repeats++;
+
 		base_time = timeMillis;
 		frames = 0;
-		cout << "FPS: " << fps << endl;
+
+
+		cout << "FPS: " << fps << " (" << (running_fps*1000.0/tot_time) << " over " << repeats << ")" << endl;
 	}
 
 
@@ -307,7 +276,7 @@ int main(int argc, char **argv) {
         glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
         glutInitWindowPosition(100,100);
         glutInitWindowSize(320,320);
-        glutCreateWindow("Lighthouse3D - GLUT Tutorial");
+        glutCreateWindow("Mroon");
 
         // register callbacks
         glutDisplayFunc(renderScene);
